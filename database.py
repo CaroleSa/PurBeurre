@@ -18,16 +18,23 @@ class Database:
         # running file "base.sql" requests : for the creation of the database
         self.cursor.execute("SOURCE base.sql;")
 
-    def load_data(self):
-        # loading data of API Openfoodfacts and convert to json
+    def load_insert_data(self):
+        # loading data of API Openfoodfacts, convert to json and inserting data into the database
         r = requests.get("https://fr.openfoodfacts.org/cgi/search.pl?action=process&tagtype_0=categories&tag_contains_"
-                         "0=contains&tag_0=pizza&sort_by=unique_scans_n&page_size=10&axis_x=energy&axis_y=products_n&action=display&json=1")
-        result = json.loads(r.text)
+                         "0=contains&tag_0=pizza&sort_by=unique_scans_n&page_size=10&axis_x=energy&axis_"
+                         "y=products_n&action=display&json=1")
+        data = json.loads(r.text)
 
-    def insert_data(self):
-        # inserting data into the database
-        for value in result['products']:
+        for value in data['products']:
             print(value['product_name_fr'])
+            print(value['categories'])
+            print(value['nutrition_grade_fr'])
+            print(value['ingredients_text_with_allergens'])
+            print(value['stores_tags'])
+            print(value['url'])
 
-test = Database()
-test.creation_database()
+new_database = Database()
+#new_database.creation_database()
+new_database.load_insert_data()
+
+

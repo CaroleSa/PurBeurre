@@ -9,17 +9,11 @@ import json
 import requests
 
 
-r = requests.get("https://fr.openfoodfacts.org/cgi/search.pl?action=process&tagtype_0=categories&tag_contains_"
-                 "0=contains&tag_0=pizza&sort_by=unique_scans_n&page_size=10&axis_x=energy&axis_y=products_n&action=display&json=1")
 
-result = json.loads(r.text)
 
-for value in result['products']:
-    print(value['product_name_fr'])
+"""')
 
-"""data_base = mysql.connector.connect(user='root', password='Root', host='localhost', database='p2p_blog')
 
-cursor = data_base.cursor()
 
 add_database = ("CREATE DATABASE Purbeurre CHARACTER SET 'utf 8';")
 

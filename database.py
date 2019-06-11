@@ -7,6 +7,7 @@ import mysql.connector
 import json
 import requests
 
+
 class Database:
 
     def __init__(self):
@@ -15,8 +16,14 @@ class Database:
         self.cursor = self.data_base.cursor()
 
     def creation_database(self):
-        # running file "base.sql" requests : for the creation of the database
-        self.cursor.execute("SOURCE base.sql;")
+        # running file "base.sql" requests : for the creation of the database NE MARCHE PAS
+        try:
+            self.cursor.execute("SOURCE base.sql;")
+            print('ça a marché !!!!')
+        except mysql.connector.errors.ProgrammingError:
+            print('je ne sais pas pourquoi ça ne marche pas !!!')
+        finally:
+            self.data_base.close()
 
     def load_insert_data(self):
         # loading data of API Openfoodfacts, convert to json and inserting data into the database
@@ -32,17 +39,21 @@ class Database:
             ingredients = value['ingredients_text_with_allergens']
             store_tags = value['stores_tags']
             url = value['url']
+            """data = {"name_food" : product_name, "category" : categories, "nutriscore" : nutrition_grade, 
+                    "description" : ingredients, "store" : store_tags, "link" : url}"""
+            print(categories)
 
-            insert_data = ("""INSERT INTO Food (name_food, category, nutriscore, description, store, link)
-            VALUES(product_name, categories, nutrition_grade, ingredients, store_tags, url);""")
+            use_data = ("USE purbeurre;")
+            insert_data = ("""INSERT INTO Food (name_food, category, nutriscore, description, store, link) 
+            VALUES({}, {}, {}, {}, {}, {});""".format(product_name, categories, nutrition_grade, ingredients,
+                                                      store_tags, url))
+            self.cursor.execute(use_data)
             self.cursor.execute(insert_data)
-
             self.data_base.commit()
-
             self.cursor.close()
 
 new_database = Database()
-new_database.creation_database()
-#new_database.load_insert_data()
+#new_database.creation_database()
+new_database.load_insert_data()
 
 

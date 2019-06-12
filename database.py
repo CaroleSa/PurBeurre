@@ -15,8 +15,6 @@ class Database:
         self.data_base = mysql.connector.connect(user='root', password='Root', host='localhost')
         self.cursor = self.data_base.cursor()
 
-
-
     def load_insert_data(self):
         # loading data of API Openfoodfacts, convert to json and inserting data into the database
         try:
@@ -36,13 +34,11 @@ class Database:
                 data = {"name_food": product_name, "nutriscore": nutrition_grade, "description": ingredients,
                         "store": store_tags, "link": url}
 
-                insert_data = ("""INSERT INTO Food (name_food, nutriscore, description, store, link) 
-                            VALUES(:name_food, :nutriscore, :description, :store, :link);""", data)
-
-                self.cursor.execute("USE Purbeurre;")
+                insert_data = ("""INSERT INTO Food (name_food, nutriscore, description, store, link)
+                          VALUES(:name_food, :nutriscore, :description, :store, :link);""", data)
                 self.cursor.execute(insert_data)
-                self.data_base.commit()
-                self.cursor.close()
+            self.data_base.commit()
+            self.cursor.close()
 
         except (mysql.connector.errors.OperationalError, mysql.connector.errors.DatabaseError) as m:
             print("ca ne marche pas non plus, voici le message d'erreur :", m)
@@ -62,7 +58,7 @@ class Database:
 
 
 new_database = Database()
-new_database.creation_database()
-#new_database.load_insert_data()
+#new_database.creation_database()
+new_database.load_insert_data()
 
 

@@ -1,4 +1,4 @@
-CREATE DATABASE Purbeurre;
+CREATE DATABASE IF NOT EXISTS Purbeurre;
 
 USE Purbeurre;
 

@@ -1,0 +1,1 @@
+self.data_base = mysql.connector.connect(user='root', password='Root', host='localhost')

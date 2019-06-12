@@ -46,21 +46,38 @@ class User:
         except ValueError:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre.")
             self.answer_choice_1_category()
+        return user_answer_category
 
     def answer_choice_1_food(self):
-        # If the user chooses the option 1,
-        # then he chooses the food : PREVOIR SI CHOIX INEXISTANT
-        food = "butter"
-        number = 1
+        # he chooses the food of the category :
         print("\nRenseignez le numéro de l'aliment choisi :")
-        print("choix", number, ">", food)
+
+        # display of foods
+        self.cursor.execute("USE Purbeurre;")
+        id_category_chooses = self.answer_choice_1_category()
+        self.cursor.execute("""SELECT id, name_food FROM Food WHERE id = 
+                            (SELECT id_food FROM Food_category WHERE id_category = %s) 
+                            as id_food_category;""", (int(id_category_chooses))
+        result_food = self.cursor.fetchall()
+        for id, name_food in result_food:
+            print("choix", id, ">", name_food)
+
+        # the user chooses one food
         user_answer_food = input("Votre choix : ")
 
-        if str(user_answer_food) == "1":
-            self.proposed_substitute_favorite()
-        else:
+        # if wrong answer
+        try:
+            if int(user_answer_food) <= len(result_food) and int(user_answer_food) != 0:
+                self.data_base.close()
+                print("MySQL est fermé")
+                self.proposed_substitute_favorite()
+            else:
+                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre.")
+                self.answer_choice_1_food()
+        except ValueError:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre.")
             self.answer_choice_1_food()
+        return user_answer_food
 
     def save_substitute(self, substitute):
         # Confirmation of registration

@@ -5,8 +5,6 @@
 
 """imports"""
 import mysql.connector
-import json
-import requests
 
 
 class User:
@@ -37,8 +35,6 @@ class User:
         # if wrong answer
         try:
             if int(user_answer_category) <= len(result_categories) and int(user_answer_category) != 0:
-                self.data_base.close()
-                print("MySQL est fermé")
                 self.answer_choice_1_food()
             else:
                 print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre.")
@@ -54,10 +50,9 @@ class User:
 
         # display of foods
         self.cursor.execute("USE Purbeurre;")
-        id_category_chooses = self.answer_choice_1_category()
         self.cursor.execute("""SELECT id, name_food FROM Food WHERE id = 
                             (SELECT id_food FROM Food_category WHERE id_category = %s) 
-                            as id_food_category;""", (int(id_category_chooses))
+                            as id_food_category;""", (int(self.answer_choice_1_category())))
         result_food = self.cursor.fetchall()
         for id, name_food in result_food:
             print("choix", id, ">", name_food)
@@ -94,6 +89,7 @@ class User:
 
     def proposed_substitute_favorite(self):
         # Detail of the proposed food substitute and choice to save it : PREVOIR SI CHOIX INEXISTANT
+
         substitute = "cream"
         description = "white"
         store = "auchan"

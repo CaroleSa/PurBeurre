@@ -51,7 +51,7 @@ class Database:
                 ingredients = value['ingredients_text']
                 store_tags = value['stores_tags']
                 url = value['url']
-                print(type(product_name))
+                print(categories)
 
                 insert_data = ("""INSERT INTO Food (name_food, nutriscore, description, store, link)
                           VALUES(%s, %s, %s, %s, %s);""", (product_name, nutrition_grade, ingredients, store_tags, url))
@@ -69,6 +69,6 @@ class Database:
 
 
 new_database = Database()
-new_database.creation_database()
-#new_database.test()
+#new_database.creation_database()
+new_database.load_insert_data()
 

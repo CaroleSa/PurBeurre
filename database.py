@@ -4,7 +4,6 @@
 """Creation database"""
 
 import mysql.connector
-
 import json
 import requests
 
@@ -14,11 +13,8 @@ class Database:
     def __init__(self):
         # connection at MySQL and creation cursor
         with open('connection.yml', 'r') as f:
-            user = f.read()
-            print(user)
-            self.data_base = mysql.connector.connect(user)
-            #= yaml.load(f)
-            #self.data_base = mysql.connector.connect(user='root', password='Root', host='localhost')
+            user = f.read().split()
+            self.data_base = mysql.connector.connect(user=user[0], password=user[1], host=user[2])
             self.cursor = self.data_base.cursor()
 
     def load_insert_data(self):
@@ -47,7 +43,7 @@ class Database:
             self.cursor.close()
 
         except (mysql.connector.errors.OperationalError, mysql.connector.errors.DatabaseError) as m:
-            print("ca ne marche pas non plus, voici le message d'erreur :", m)
+            print("Insertion de données ne marche pas, voici le message d'erreur :", m)
 
         finally:
             self.data_base.close()

@@ -4,6 +4,7 @@
 """Creation database"""
 
 import mysql.connector
+
 import json
 import requests
 
@@ -12,8 +13,13 @@ class Database:
 
     def __init__(self):
         # connection at MySQL and creation cursor
-        self.data_base = mysql.connector.connect(user='root', password='Root', host='localhost')
-        self.cursor = self.data_base.cursor()
+        with open('connection.yml', 'r') as f:
+            user = f.read()
+            print(user)
+            self.data_base = mysql.connector.connect(user)
+            #= yaml.load(f)
+            #self.data_base = mysql.connector.connect(user='root', password='Root', host='localhost')
+            self.cursor = self.data_base.cursor()
 
     def load_insert_data(self):
         # loading data of API Openfoodfacts, convert to json and inserting data into the database
@@ -58,7 +64,7 @@ class Database:
 
 
 new_database = Database()
-#new_database.creation_database()
-new_database.load_insert_data()
+new_database.creation_database()
+#new_database.load_insert_data()
 
 

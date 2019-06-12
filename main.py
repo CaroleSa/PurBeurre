@@ -20,7 +20,7 @@ class User:
             self.cursor = self.data_base.cursor()
 
     def answer_choice_1_category(self):
-        # If the user chooses the option 1,
+        # if the user chooses the option 1,
         # he chooses the category :
         print("\nRenseignez le numéro de la catégorie choisie :")
 
@@ -31,19 +31,19 @@ class User:
         for id, categories in result_categories:
             print("choix", id, ">", categories)
 
-        self.cursor.execute("SELECT MAX(id) FROM Category;")
-        result_max_id_categories = self.cursor.fetchall()
-        print(result_max_id_categories)
-
         # the user chooses one category
         user_answer_category = input("Votre choix : ")
 
-
-        if user_answer_category > str(result_max_id_categories):
-            self.answer_choice_1_food()
-        elif user_answer_category <= str(result_max_id_categories):
-            print("bon choix")
-        else:
+        # if wrong answer
+        try:
+            if int(user_answer_category) <= len(result_categories) and int(user_answer_category) != 0:
+                self.data_base.close()
+                print("MySQL est fermé")
+                self.answer_choice_1_food()
+            else:
+                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre.")
+                self.answer_choice_1_category()
+        except ValueError:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre.")
             self.answer_choice_1_category()
 

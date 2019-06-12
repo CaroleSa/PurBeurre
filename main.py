@@ -11,17 +11,38 @@ import requests
 
 class User:
 
+    def __init__(self):
+        """new_database = db.Database()
+        self.cursor = new_database.cursor"""
+        with open('connection.yml', 'r') as f:
+            info = f.read().split()
+            self.data_base = mysql.connector.connect(user=info[0], password=info[1], host=info[2])
+            self.cursor = self.data_base.cursor()
+
     def answer_choice_1_category(self):
         # If the user chooses the option 1,
-        # then he chooses the category : PREVOIR SI CHOIX INEXISTANT
-        category = "fresh_frozen"
-        number = 1
+        # he chooses the category :
         print("\nRenseignez le numéro de la catégorie choisie :")
-        print("choix", number, ">", category)
+
+        # display of categories
+        self.cursor.execute("USE Purbeurre;")
+        self.cursor.execute("SELECT id, categories FROM Category;")
+        result_categories = self.cursor.fetchall()
+        for id, categories in result_categories:
+            print("choix", id, ">", categories)
+
+        self.cursor.execute("SELECT MAX(id) FROM Category;")
+        result_max_id_categories = self.cursor.fetchall()
+        print(result_max_id_categories)
+
+        # the user chooses one category
         user_answer_category = input("Votre choix : ")
 
-        if str(user_answer_category) == "1":
+
+        if user_answer_category > str(result_max_id_categories):
             self.answer_choice_1_food()
+        elif user_answer_category <= str(result_max_id_categories):
+            print("bon choix")
         else:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre.")
             self.answer_choice_1_category()

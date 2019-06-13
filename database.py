@@ -50,8 +50,8 @@ class Database:
 
                 for elt in category_list:
                     insert_data_food = ("""INSERT INTO Food (name_food, category_id, nutriscore, description, store, link)
-                                        VALUES({0}, (SELECT id FROM Category CASE WHEN POSITION({1} IN {0}) = 0 THEN 'test' ELSE 'NULL' END), 
-                                        {2}, {3}, {4}, {5});"""
+                                        VALUES({0}, (SELECT Category.id FROM Category INNER JOIN Food ON Category.id = 
+                                        Food.category_id WHERE {0} LIKE '%{1}%'), {2}, {3}, {4}, {5});"""
                                         .format(product_name, elt, nutrition_grade, ingredients, store_tags, url))
                 print(insert_data_food)
                 self.cursor.execute(insert_data_food)
@@ -68,4 +68,4 @@ new_database = Database()
 #new_database.creation_database()
 new_database.load_insert_data()
 
-#
+#SELECT Category.id FROM Category INNER JOIN Food ON Category.id = Food.category_id WHERE name_food LIKE '%pizza%';

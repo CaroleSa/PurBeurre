@@ -4,7 +4,8 @@ USE Purbeurre;
 
 CREATE TABLE Food(
 id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-name_food VARCHAR(50) NOT NULL,
+name_food VARCHAR(90) NOT NULL,
+category_id INT UNSIGNED,
 nutriscore VARCHAR(3) NOT NULL,
 description VARCHAR(1000),
 store VARCHAR(100),
@@ -19,15 +20,15 @@ substitute_chooses VARCHAR(50) NOT NULL
 ENGINE = InnoDB;
 
 CREATE TABLE Category(
-id INT UNSIGNED AUTO_INCREMENT NOT NULL UNIQUE,
+id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 categories VARCHAR(50)
 );
 
-ALTER TABLE Category
-ADD PRIMARY KEY (categories);
-
 ALTER TABLE Food
 ADD INDEX ind_nutriscore (nutriscore);
+
+ALTER TABLE Food
+ADD CONSTRAINT fk_food_id_category FOREIGN KEY (category_id) REFERENCES Category (id);
 
 ALTER TABLE Favorite
 ADD CONSTRAINT fk_favorite_id_food FOREIGN KEY (id_food) REFERENCES Food (id);

@@ -5,18 +5,18 @@
 
 """imports"""
 import mysql.connector
-import database as db
+
 
 
 class User:
 
     def __init__(self):
-        new_database = db.Database()
-        self.cursor = new_database.cursor
-        """with open('connection.yml', 'r') as f:
+        """new_database = db.Database()
+        self.cursor = new_database.cursor"""
+        with open('connection.yml', 'r') as f:
             info = f.read().split()
             self.data_base = mysql.connector.connect(user=info[0], password=info[1], host=info[2])
-            self.cursor = self.data_base.cursor()"""
+            self.cursor = self.data_base.cursor()
 
         self.user_answer_category = 0
         self.user_answer_food = 0

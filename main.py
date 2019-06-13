@@ -5,17 +5,18 @@
 
 """imports"""
 import mysql.connector
+import database as db
 
 
 class User:
 
     def __init__(self):
-        """new_database = db.Database()
-        self.cursor = new_database.cursor"""
-        with open('connection.yml', 'r') as f:
+        new_database = db.Database()
+        self.cursor = new_database.cursor
+        """with open('connection.yml', 'r') as f:
             info = f.read().split()
             self.data_base = mysql.connector.connect(user=info[0], password=info[1], host=info[2])
-            self.cursor = self.data_base.cursor()
+            self.cursor = self.data_base.cursor()"""
 
         self.user_answer_category = 0
         self.user_answer_food = 0
@@ -89,16 +90,28 @@ class User:
             self.answer_choice_1_food()
 
     def proposed_substitute_favorite(self):
-        # Detail of the proposed food substitute and choice to save it : PREVOIR SI CHOIX INEXISTANT
+        # Detail of the proposed food substitute and choice to save it
+
+        self.cursor.execute("USE Purbeurre;")
+        self.cursor.execute("""SELECT (SELECT name_food FROM Food WHERE id = {2}) as name_food_chooses, 
+                            (SELECT nutriscore FROM Food WHERE id = {2}) as nutriscore_of_food_chooses, 
+                            name_food, nutriscore, description, store, link
+                            FROM Food
+                            WHERE id IN (SELECT id_food FROM Food_category WHERE id_category = {1}) 
+                            as id_foods_of_category_chooses 
+                            AND nutriscore < (SELECT nutriscore FROM Food WHERE id = {2}) as nutriscore_of_food_chooses
+                            ORDER BY nutriscore ASC;""".format(self.user_answer_category, self.user_answer_food))
+        result_substitute = self.cursor.fetchall()
+
+        for name_food_chooses, name_food, nutriscore_of_food_chooses, nutriscore, description, store, link in result_substitute:
+            print("L'aliment", name_food_chooses, "peut être remplacé par", name_food,
+              "(", nutriscore_of_food_chooses, "):\nnutriscore :", nutriscore, "\nDescription :", description,
+              "\nMagasin où le trouver :", store, "\nLien internet :", link)
+
+        self.save_substitute(substitute)
+
         self.data_base.close()
         print("MySQL est fermé")
-        substitute = "cream"
-        description = "white"
-        store = "auchan"
-        link = "http..."
-        print("\nSubstitut proposé :", substitute, "\nDescription :", description, "\nMagasin où le trouver :",
-              store, "\nLien internet :", link)
-        self.save_substitute(substitute)
 
     def save_substitute(self, substitute):
         # Confirmation of registration
@@ -115,11 +128,10 @@ class User:
 
     def answer_choice_2(self):
         # If the user chooses the option 2 :
+
         print("\nMes aliments substitués enregistrés :")
         print("\nSubstitute (substitut de food) \nDescription : descrition \nMagasin où le trouver : store "
               "\nLien internet : link")
-
-
 
 new_user = User()
 new_user.first_question()

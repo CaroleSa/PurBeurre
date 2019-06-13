@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS Purbeurre;
+CREATE DATABASE IF NOT EXISTS Purbeurre CHARACTER SET 'utf8';
 
 USE Purbeurre;
 
@@ -23,12 +23,6 @@ id INT UNSIGNED AUTO_INCREMENT NOT NULL UNIQUE,
 categories VARCHAR(50)
 );
 
-CREATE TABLE Food_category(
-id_food INT UNSIGNED NOT NULL,
-id_category INT UNSIGNED NOT NULL
-)
-ENGINE = InnoDB;
-
 ALTER TABLE Category
 ADD PRIMARY KEY (categories);
 
@@ -37,9 +31,3 @@ ADD INDEX ind_nutriscore (nutriscore);
 
 ALTER TABLE Favorite
 ADD CONSTRAINT fk_favorite_id_food FOREIGN KEY (id_food) REFERENCES Food (id);
-
-ALTER TABLE Food_category
-ADD CONSTRAINT fk_food_category_id_food FOREIGN KEY (id_food) REFERENCES Food (id);
-
-ALTER TABLE Food_category
-ADD CONSTRAINT fk_food_category_id_category FOREIGN KEY (id_category) REFERENCES Category (id);

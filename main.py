@@ -68,9 +68,8 @@ class User:
         # display of foods
         self.cursor.execute("USE Purbeurre;")
         self.cursor.execute("""SELECT id, name_food 
-                            FROM Food 
-                            WHERE id IN (SELECT id_food FROM Food_category WHERE id_category = {});"""
-                            .format(self.user_answer_category))
+                            FROM Food
+                            WHERE category_id = {};""".format(self.user_answer_category))
         result_food = self.cursor.fetchall()
         for id, name_food in result_food:
             print("choix", id, ">", name_food)
@@ -91,27 +90,21 @@ class User:
 
     def proposed_substitute_favorite(self):
         # Detail of the proposed food substitute and choice to save it
-
         self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("""SELECT (SELECT name_food FROM Food WHERE id = {2}) as name_food_chooses, 
-                            (SELECT nutriscore FROM Food WHERE id = {2}) as nutriscore_of_food_chooses, 
+        self.cursor.execute("""SELECT (SELECT name_food FROM Food WHERE id = {1}) as name_food_chooses, 
+                            (SELECT nutriscore FROM Food WHERE id = {1}) as nutriscore_of_food_chooses, 
                             name_food, nutriscore, description, store, link
                             FROM Food
-                            WHERE id IN (SELECT id_food FROM Food_category WHERE id_category = {1}) 
-                            as id_foods_of_category_chooses 
-                            AND nutriscore < (SELECT nutriscore FROM Food WHERE id = {2}) as nutriscore_of_food_chooses
+                            WHERE category_id = {0} AND nutriscore < (SELECT nutriscore FROM Food WHERE id = {1})
                             ORDER BY nutriscore ASC;""".format(self.user_answer_category, self.user_answer_food))
         result_substitute = self.cursor.fetchall()
 
-        for name_food_chooses, name_food, nutriscore_of_food_chooses, nutriscore, description, store, link in result_substitute:
-            print("L'aliment", name_food_chooses, "peut être remplacé par", name_food,
-              "(", nutriscore_of_food_chooses, "):\nnutriscore :", nutriscore, "\nDescription :", description,
-              "\nMagasin où le trouver :", store, "\nLien internet :", link)
+        for name_food_chooses, nutriscore_of_food_chooses, name_substitute, nutriscore, description, store, link in result_substitute:
+            print("L'aliment", name_food_chooses, "(Nutriscore :", nutriscore_of_food_chooses, ") peut être remplacé par",
+                  name_substitute, ":\nnutriscore :", nutriscore, "\nDescription :", description, "\nMagasin(s) où le trouver :",
+                  store, "\nLien internet :", link)
 
-        self.save_substitute(substitute)
-
-        self.data_base.close()
-        print("MySQL est fermé")
+        self.save_substitute("pizza")
 
     def save_substitute(self, substitute):
         # Confirmation of registration
@@ -119,19 +112,23 @@ class User:
         user_answer_save_food = input("Votre choix : ")
 
         if user_answer_save_food == "1":
+            self.cursor.execute = """INSERT INTO Favorite (id_food, substitute_chooses)
+                                    VALUES({0}, {1});""".format(self.user_answer_food, substitute)
             print("\nNous avons bien enregistré le substitut", substitute+".")
         elif user_answer_save_food == "2":
             print("\nEnregistrement non effectué pour le substitut", substitute+".")
         else:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
-            self.save_substitute(substitute)
+            self.save_substitute(name_food)
 
     def answer_choice_2(self):
         # If the user chooses the option 2 :
-
         print("\nMes aliments substitués enregistrés :")
         print("\nSubstitute (substitut de food) \nDescription : descrition \nMagasin où le trouver : store "
               "\nLien internet : link")
 
 new_user = User()
 new_user.first_question()
+
+
+# faire que l'on ne recupere qu'un substitut puis faire save_substitute et answer_choice_2

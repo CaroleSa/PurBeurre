@@ -93,7 +93,7 @@ class User:
         self.cursor.execute("USE Purbeurre;")
         self.cursor.execute("""SELECT (SELECT name_food FROM Food WHERE id = {1}) as name_food_chooses, 
                             (SELECT nutriscore FROM Food WHERE id = {1}) as nutriscore_of_food_chooses, 
-                            name_food, nutriscore, description, store, link
+                            name_food, MIN(nutriscore), description, store, link
                             FROM Food
                             WHERE category_id = {0} AND nutriscore < (SELECT nutriscore FROM Food WHERE id = {1})
                             ORDER BY nutriscore ASC;""".format(self.user_answer_category, self.user_answer_food))
@@ -104,7 +104,7 @@ class User:
                   name_substitute, ":\nnutriscore :", nutriscore, "\nDescription :", description, "\nMagasin(s) où le trouver :",
                   store, "\nLien internet :", link)
 
-        self.save_substitute("pizza")
+            self.save_substitute(name_substitute)
 
     def save_substitute(self, substitute):
         # Confirmation of registration
@@ -114,6 +114,7 @@ class User:
         if user_answer_save_food == "1":
             self.cursor.execute = """INSERT INTO Favorite (id_food, substitute_chooses)
                                     VALUES({0}, {1});""".format(self.user_answer_food, substitute)
+            self.data_base.commit()
             print("\nNous avons bien enregistré le substitut", substitute+".")
         elif user_answer_save_food == "2":
             print("\nEnregistrement non effectué pour le substitut", substitute+".")
@@ -131,4 +132,5 @@ new_user = User()
 new_user.first_question()
 
 
-# faire que l'on ne recupere qu'un substitut puis faire save_substitute et answer_choice_2
+# faire que l'on ne recupere qu'un substitut max ou min ????
+# puis faire save_substitute et answer_choice_2

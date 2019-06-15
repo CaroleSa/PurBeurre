@@ -20,6 +20,7 @@ class User:
 
         self.user_answer_category = 0
         self.user_answer_food = 0
+        self.i = 0
 
     def first_question(self):
         # First question at the user :
@@ -80,7 +81,7 @@ class User:
         # if wrong answer
         try:
             if int(self.user_answer_food) <= len(result_food) and int(self.user_answer_food) != 0:
-                self.proposed_substitute_favorite()
+                self.proposed_substitute_favorite(0)
             else:
                 print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 1 et", len(result_food), ".")
                 self.answer_choice_1_food()
@@ -88,7 +89,7 @@ class User:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 1 et", len(result_food), ".")
             self.answer_choice_1_food()
 
-    def proposed_substitute_favorite(self):
+    def proposed_substitute_favorite(self, line):
         # Detail of the proposed food substitute and choice to save it
         self.cursor.execute("USE Purbeurre;")
         self.cursor.execute("""SELECT (SELECT name_food FROM Food WHERE id = {1}) as name_food_chooses, 
@@ -97,7 +98,7 @@ class User:
                             FROM Food
                             WHERE category_id = {0}
                             ORDER BY nutriscore ASC
-                            LIMIT 1;""".format(self.user_answer_category, self.user_answer_food))
+                            LIMIT {2},1;""".format(self.user_answer_category, self.user_answer_food, line))
         result_substitute = self.cursor.fetchall()
 
         for name_food_chooses, nutriscore_of_food_chooses, name_substitute, nutriscore, description, store, link in result_substitute:
@@ -111,7 +112,7 @@ class User:
                     print("Merci pour votre visite ! A bientôt !")
                 else:
                     print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
-                    self.proposed_substitut_favorite()
+                    self.proposed_substitut_favorite(0)
             else:
                 print("L'aliment", name_food_chooses, "(Nutriscore :", nutriscore_of_food_chooses, ") peut être remplacé par",
                     name_substitute, ":\nnutriscore :", nutriscore, "\nDescription :", description, "\nMagasin(s) où le trouver :",
@@ -131,10 +132,11 @@ class User:
             print("\nNous avons bien enregistré le substitut", substitute+".")
         elif user_answer_save_food == "2":
             print("\nEnregistrement non effectué pour le substitut", substitute+".")
-        elif user_answer_save_food == "3":
-            self.proposed_substitute_favorite()
+        while user_answer_save_food == "3":
+            self.i += 1
+            self.proposed_substitute_favorite(0 + self.i)
         else:
-            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
+            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
             self.save_substitute(name_food)
 
     def answer_choice_2(self):

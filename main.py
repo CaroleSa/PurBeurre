@@ -112,9 +112,9 @@ class User:
                     print("Merci pour votre visite ! A bientôt !")
                 else:
                     print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
-                    self.proposed_substitut_favorite(0)
+                    self.proposed_substitute_favorite(0)
             else:
-                print("L'aliment", name_food_chooses, "(Nutriscore :", nutriscore_of_food_chooses, ") peut être remplacé par",
+                print("\nL'aliment", name_food_chooses, "(Nutriscore :", nutriscore_of_food_chooses, ") peut être remplacé par",
                     name_substitute, ":\nnutriscore :", nutriscore, "\nDescription :", description, "\nMagasin(s) où le trouver :",
                     store, "\nLien internet :", link)
                 self.save_substitute(name_substitute)

@@ -119,9 +119,9 @@ class User:
                 print("\nL'aliment", name_food_chooses, "(Nutriscore :", nutriscore_of_food_chooses, ") peut être remplacé par",
                     self.name_substitute, ":\nnutriscore :", nutriscore, "\nDescription :", description, "\nMagasin(s) où le trouver :",
                     store, "\nLien internet :", link)
-                self.save_substitute(self.name_substitute)
+                self.save_substitute()
 
-    def save_substitute(self, substitute):
+    def save_substitute(self):
         # Confirmation of registration
         print("\nSouhaitez-vous enregistrer ce substitut ? \nchoix 1 > oui \nchoix 2 > non "
               "\nchoix 3 > je souhaite un autre substitut possible")
@@ -129,23 +129,25 @@ class User:
 
         try:
             if self.user_answer_save_food == "1":
-                self.cursor.execute = """INSERT INTO Favorite (id_food, substitute_chooses)
-                                    VALUES({0}, {1});""".format(self.user_answer_food, substitute)
-                self.data_base.commit()
-                print("\nNous avons bien enregistré le substitut", substitute+".")
-                self.return_menu()
+                 save_favorite_substitute = """INSERT INTO Favorite (id_food, substitute_chooses)
+                                            VALUES({0}, (SELECT id FROM Food WHERE name_food = {1});"""\
+                                            .format(int(self.user_answer_food), "\'"+self.name_substitute+"\'")
+                 self.cursor.execute(save_favorite_substitute)
+                 self.data_base.commit()
+                 print("\nNous avons bien enregistré le substitut", self.name_substitute+".")
+                 self.return_menu()
             elif self.user_answer_save_food == "2":
-                print("\nEnregistrement non effectué pour le substitut", substitute+".")
+                print("\nEnregistrement non effectué pour le substitut", self.name_substitute+".")
                 self.return_menu()
             elif int(self.user_answer_save_food) > 3 or int(self.user_answer_save_food) == 0:
                 print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
-                self.save_substitute(self.name_substitute)
+                self.save_substitute()
             while self.user_answer_save_food == "3":
                 self.i += 1
                 self.proposed_substitute_favorite(0 + self.i)
         except ValueError:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
-            self.save_substitute(self.name_substitute)
+            self.save_substitute()
 
     def answer_choice_2(self):
         # If the user chooses the option 2 :

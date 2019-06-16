@@ -46,16 +46,16 @@ class Database:
                 ingredients = "\'"+value['ingredients_text'].replace("'", "")+"\'"
                 store_tags = "\'"+", ".join(value['stores_tags']).replace("'", "")+"\'"
                 url = "\'"+value['url'].replace("'", "")+"\'"
-                category_list = ["pizza", "pate a tartiner", "gateau", "yaourt", "bonbon"]
+                category_list = ["pizza"]
 
                 for elt in category_list:
                     insert_data_food = ("""INSERT INTO Food (name_food, category_id, nutriscore, description, store, link)
-                                        VALUES({0}, (SELECT Category.id FROM Category INNER JOIN Food ON Category.id = 
-                                        Food.category_id WHERE {0} LIKE '%{1}%'), {2}, {3}, {4}, {5});"""
+                                        VALUES({0}, (SELECT Category.id FROM Category WHERE {0} LIKE '%{1}%'), 
+                                        {2}, {3}, {4}, {5});"""
                                         .format(product_name, elt, nutrition_grade, ingredients, store_tags, url))
-                print(insert_data_food)
-                self.cursor.execute(insert_data_food)
-                self.data_base.commit()
+                    print(insert_data_food)
+                    self.cursor.execute(insert_data_food)
+                    self.data_base.commit()
 
 
 

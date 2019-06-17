@@ -4,7 +4,7 @@ USE Purbeurre;
 
 CREATE TABLE Food(
 id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-name_food VARCHAR(90) NOT NULL,
+name_food VARCHAR(120) NOT NULL,
 category_id INT UNSIGNED,
 nutriscore VARCHAR(3) NOT NULL,
 description VARCHAR(1000),

@@ -21,6 +21,7 @@ class User:
         self.user_answer_category = 0
         self.user_answer_food = 0
         self.user_answer_save_food = 0
+        self.name_food_chooses = ""
         self.name_substitute = ""
         self.i = 0
 
@@ -103,23 +104,29 @@ class User:
                             LIMIT {2},1;""".format(self.user_answer_category, self.user_answer_food, line))
         result_substitute = self.cursor.fetchall()
 
-        for name_food_chooses, nutriscore_of_food_chooses, self.name_substitute, nutriscore, description, store, link in result_substitute:
-            if name_food_chooses == self.name_substitute:
-                print("\nL'aliment", name_food_chooses, "n'a pas de substitut possible.\n"
-                    "Souhaitez-vous faire une nouvelle recherche ? \nchoix 1 > oui \nchoix 2 > non")
-                user_answer_new_search = input("Votre choix : ")
-                if user_answer_new_search == "1":
-                    self.answer_choice_1_category()
-                elif user_answer_new_search == "2":
-                    self.return_menu()
-                else:
-                    print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
-                    self.proposed_substitute_favorite(0)
+        for self.name_food_chooses, nutriscore_of_food_chooses, self.name_substitute, nutriscore, description, store, \
+            link in result_substitute:
+            if nutriscore_of_food_chooses == nutriscore \
+                    or self.order_letters(nutriscore_of_food_chooses) < self.order_letters(nutriscore) :
+                self.no_substitute()
+
             else:
-                print("\nL'aliment", name_food_chooses, "(Nutriscore :", nutriscore_of_food_chooses, ") peut être remplacé par",
-                    self.name_substitute, ":\nnutriscore :", nutriscore, "\nDescription :", description, "\nMagasin(s) où le trouver :",
-                    store, "\nLien internet :", link)
+                print("\nL'aliment", self.name_food_chooses, "(Nutriscore :", nutriscore_of_food_chooses,
+                      ") peut être remplacé par", self.name_substitute, ":\nnutriscore :", nutriscore,
+                      "\nDescription :", description, "\nMagasin(s) où le trouver :", store, "\nLien internet :", link)
                 self.save_substitute()
+
+    def no_substitute(self):
+        print("\nL'aliment", self.name_food_chooses, "n'a pas d'autres substituts possibles.\n"
+              "Souhaitez-vous faire une nouvelle recherche ? \nchoix 1 > oui \nchoix 2 > non")
+        user_answer_new_search = input("Votre choix : ")
+        if user_answer_new_search == "1":
+            self.answer_choice_1_category()
+        elif user_answer_new_search == "2":
+            self.return_menu()
+        else:
+            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
+            self.no_substitute()
 
     def save_substitute(self):
         # Confirmation of registration
@@ -130,8 +137,9 @@ class User:
         try:
             if self.user_answer_save_food == "1":
                  save_favorite_substitute = """INSERT INTO Favorite (id_food, substitute_chooses)
-                                            VALUES({0}, (SELECT id FROM Food WHERE name_food = {1});"""\
+                                            VALUES({0}, (SELECT id FROM Food WHERE name_food = {1}));"""\
                                             .format(int(self.user_answer_food), "\'"+self.name_substitute+"\'")
+                 print(save_favorite_substitute)
                  self.cursor.execute(save_favorite_substitute)
                  self.data_base.commit()
                  print("\nNous avons bien enregistré le substitut", self.name_substitute+".")
@@ -139,12 +147,12 @@ class User:
             elif self.user_answer_save_food == "2":
                 print("\nEnregistrement non effectué pour le substitut", self.name_substitute+".")
                 self.return_menu()
-            elif int(self.user_answer_save_food) > 3 or int(self.user_answer_save_food) == 0:
-                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
-                self.save_substitute()
-            while self.user_answer_save_food == "3":
+            elif self.user_answer_save_food == "3":
                 self.i += 1
                 self.proposed_substitute_favorite(0 + self.i)
+            else:
+                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
+                self.save_substitute()
         except ValueError:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
             self.save_substitute()
@@ -166,8 +174,14 @@ class User:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
             self.return_menu()
 
+    def order_letters(self, letter):
+        return int(ord(letter) - ord('a') + 1)
+
+
 new_user = User()
 new_user.first_question()
+
+#voir si on fait une recherche au hazard plutot pour le substitut
 
 
 

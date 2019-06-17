@@ -179,6 +179,29 @@ class User:
 
         user_answer_choice_substitute = input("Tapez un choix pour plus de détail : ")
 
+        # if wrong answer
+        try:
+            if int(user_answer_choice_substitute) <= len(show_food_substitute) \
+                    and int(user_answer_choice_substitute) != 0:
+                self.cursor.execute("""SELECT name_food, nutriscore, description, store, link
+                                    FROM Food 
+                                    WHERE Food.id = {};""".format(int(user_answer_choice_substitute)))
+                show_substitute = self.cursor.fetchall()
+
+                for name_substitute, nutriscore_substitute, description_substitute, store_substitute, link_substitute \
+                        in show_substitute :
+                    print("\nAliment : ", name_substitute, "\n Nutriscore : ", nutriscore,
+                          "\n Description : ", description, "\n Magasin(s) où le trouver : ", nutriscore,
+                          "\n Lien d'information : ", nutriscore)
+                self.return_menu()
+            elif int(user_answer_choice_substitute) == 0:
+                self.return_menu()
+            else:
+                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(show_food_substitute), ".")
+                self.answer_choice_2()
+        except ValueError:
+            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(show_food_substitute), ".")
+            self.answer_choice_2()
 
     def return_menu(self):
         print("\nMerci d'indiquer votre choix : \nchoix 1 > retourner au menu \nchoix 2 > quitter")

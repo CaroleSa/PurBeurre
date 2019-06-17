@@ -54,10 +54,9 @@ class Database:
                     insert_data_food = ("""INSERT INTO Food (name_food, category_id, nutriscore, description, store, link)
                                         VALUES({0}, {1}, {2}, {3}, {4}, {5});"""
                                         .format(product_name, i + 1, nutrition_grade, ingredients, store_tags, url))
-                    print(insert_data_food)
-                    print(elt)
+
                     self.cursor.execute(insert_data_food)
-                    self.data_base.commit()
+                self.data_base.commit()
 
         except KeyError:
             pass
@@ -66,5 +65,5 @@ class Database:
             print("Insertion de données ne marche pas, voici le message d'erreur :", m)
 
 new_database = Database()
-#new_database.creation_database()
-new_database.load_insert_data()
+new_database.creation_database()
+#new_database.load_insert_data()

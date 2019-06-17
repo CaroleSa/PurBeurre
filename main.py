@@ -172,14 +172,13 @@ class User:
                             WHERE Food.id = Favorite.id_food;""")
         show_food_substitute = self.cursor.fetchall()
 
-        for category_id, name_substitute in show_favorite_substitute_id:
-            for food_substitute in show_food_substitute:
-                print("\nVoici vos aliments substitués enregistrés :")
-                print("choix 0 > quitter mes substituts enregistrés")
-                print("choix", category_id, ">", name_substitute,
-                    "(substitut de", food_substitute[0]+")" )
+        print("\nVoici vos aliments substitués enregistrés :\nchoix 0 > quitter mes substituts enregistrés")
 
-                user_answer_choice_substitute = input("Tapez un choix pour plus de détail : ")
+        for name_id_substitute, food_substitute in zip(show_favorite_substitute_id, show_food_substitute):
+            print("choix", name_id_substitute[0], ">", name_id_substitute[1], "(substitut de", food_substitute[0]+")" )
+
+        user_answer_choice_substitute = input("Tapez un choix pour plus de détail : ")
+
 
     def return_menu(self):
         print("\nMerci d'indiquer votre choix : \nchoix 1 > retourner au menu \nchoix 2 > quitter")

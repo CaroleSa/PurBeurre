@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="586d9859-44f6-4702-a111-4b5985b0ce0f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/base.sql" beforeDir="false" afterPath="$PROJECT_DIR$/base.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,8 +15,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="205">
-              <caret line="49" column="81" selection-start-line="49" selection-start-column="64" selection-end-line="49" selection-end-column="81" />
+            <state relative-caret-position="559">
+              <caret line="59" column="43" lean-forward="true" selection-start-line="59" selection-start-column="43" selection-end-line="59" selection-end-column="43" />
               <folding>
                 <element signature="e#66#88#0" expanded="true" />
               </folding>
@@ -37,8 +36,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="176" column="70" lean-forward="true" selection-start-line="176" selection-start-column="70" selection-end-line="176" selection-end-column="70" />
+            <state relative-caret-position="301">
+              <caret line="178" lean-forward="true" selection-start-line="178" selection-end-line="178" />
             </state>
           </provider>
         </entry>
@@ -213,8 +212,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.test" />
         <item itemvalue="Python.database" />
+        <item itemvalue="Python.test" />
         <item itemvalue="Python.tester" />
       </list>
     </recent_temporary>
@@ -256,7 +255,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32974428" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.26702997" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.2664872" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.32798833" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -324,8 +323,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/database.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="49" column="81" selection-start-line="49" selection-start-column="64" selection-end-line="49" selection-end-column="81" />
+        <state relative-caret-position="559">
+          <caret line="59" column="43" lean-forward="true" selection-start-line="59" selection-start-column="43" selection-end-line="59" selection-end-column="43" />
           <folding>
             <element signature="e#66#88#0" expanded="true" />
           </folding>
@@ -341,8 +340,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="176" column="70" lean-forward="true" selection-start-line="176" selection-start-column="70" selection-end-line="176" selection-end-column="70" />
+        <state relative-caret-position="301">
+          <caret line="178" lean-forward="true" selection-start-line="178" selection-end-line="178" />
         </state>
       </provider>
     </entry>

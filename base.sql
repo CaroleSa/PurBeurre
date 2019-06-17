@@ -32,3 +32,6 @@ ADD CONSTRAINT fk_food_id_category FOREIGN KEY (category_id) REFERENCES Category
 
 ALTER TABLE Favorite
 ADD CONSTRAINT fk_favorite_id_food FOREIGN KEY (id_food) REFERENCES Food (id);
+
+ALTER TABLE Favorite
+ADD CONSTRAINT fk_favorite_substitute_chooses FOREIGN KEY (substitute_chooses) REFERENCES Food (id);

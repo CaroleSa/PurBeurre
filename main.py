@@ -159,9 +159,27 @@ class User:
 
     def answer_choice_2(self):
         # If the user chooses the option 2 :
-        print("\nMes aliments substitués enregistrés :")
-        print("\nSubstitute (substitut de food) \nDescription : descrition \nMagasin où le trouver : store "
-              "\nLien internet : link")
+        self.cursor.execute("USE Purbeurre;")
+        self.cursor.execute("""SELECT Favorite.id, Food.name_food
+                            FROM Food 
+                            JOIN Favorite ON Food.id = Favorite.substitute_chooses 
+                            WHERE Food.id = Favorite.substitute_chooses;""")
+        show_favorite_substitute_id = self.cursor.fetchall()
+
+        self.cursor.execute("""SELECT Food.name_food 
+                            FROM Food
+                            JOIN Favorite ON Food.id = Favorite.id_food
+                            WHERE Food.id = Favorite.id_food;""")
+        show_food_substitute = self.cursor.fetchall()
+
+        for category_id, name_substitute in show_favorite_substitute_id:
+            for food_substitute in show_food_substitute:
+                print("\nVoici vos aliments substitués enregistrés :")
+                print("choix 0 > quitter mes substituts enregistrés")
+                print("choix", category_id, ">", name_substitute,
+                    "(substitut de", food_substitute[0]+")" )
+
+                user_answer_choice_substitute = input("Tapez un choix pour plus de détail : ")
 
     def return_menu(self):
         print("\nMerci d'indiquer votre choix : \nchoix 1 > retourner au menu \nchoix 2 > quitter")
@@ -182,7 +200,6 @@ new_user = User()
 new_user.first_question()
 
 #voir si on fait une recherche au hazard plutot pour le substitut
-
 
 
 

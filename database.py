@@ -50,9 +50,9 @@ class Database:
 
                 for elt in category_list:
                     insert_data_food = ("""INSERT INTO Food (name_food, category_id, nutriscore, description, store, link)
-                                        VALUES({0}, (SELECT Category.id FROM Category WHERE {0} LIKE '%{1}%'), 
-                                        {2}, {3}, {4}, {5});"""
-                                        .format(product_name, elt, nutrition_grade, ingredients, store_tags, url))
+                                        VALUES({0}, (SELECT Category.id FROM Category WHERE POSITION(categories IN {0}) > 0), 
+                                        {1}, {2}, {3}, {4});"""
+                                        .format(product_name, nutrition_grade, ingredients, store_tags, url))
                     print(insert_data_food)
                     self.cursor.execute(insert_data_food)
                     self.data_base.commit()

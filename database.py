@@ -17,7 +17,8 @@ class Database:
         self.data_base = mysql.connector.connect(user=info[0], password=info[1], host=info[2])
         self.cursor = self.data_base.cursor()
         self.categories = ['pizza', 'pate a tartiner', 'gateau', 'yaourt', 'bonbon']
-        self.i = 1
+        self.list_data = []
+
 
     def creation_database(self):
         # running file "base.sql" requests : for the creation of the database
@@ -31,35 +32,37 @@ class Database:
         try:
             self.cursor.execute("use purbeurre;")
 
-            for self.i, elt in enumerate(self.categories) :
+            for i, elt in enumerate(self.categories):
+                # inserting data into Food table
+                r = requests.get("https://fr.openfoodfacts.org/cgi/search.pl?action=process&tagtype_0=categories&tag_"
+                                "contains_0=contains&tag_0={0}&sort_by=unique_scans_n&page_size=1000&axis_x=energy&"
+                                "axis_y=products_n&action=display&json=1".format("\'"+elt+"\'"))
+                data = json.loads(r.text)
+                self.list_data.append(data)
+            print(len(self.list_data))
 
+            for i, elt in enumerate(self.categories) :
                 # inserting data into Category table
                 insert_data_category = ("""INSERT IGNORE INTO Category (categories) VALUES({});""".format("\'"+elt+"\'"))
                 self.cursor.execute(insert_data_category)
                 self.data_base.commit()
 
-                # inserting data into Food table
-                r = requests.get("https://fr.openfoodfacts.org/cgi/search.pl?action=process&tagtype_0=categories&tag_"
-                                 "contains_0=contains&tag_0={0}&sort_by=unique_scans_n&page_size=1000&axis_x=energy&"
-                                 "axis_y=products_n&action=display&json=1".format("\'"+elt+"\'"))
-                data = json.loads(r.text)
-                self.i += 1
+                for element in self.list_data:
+                    for value in element['products']:
+                        product_name = "\'"+value['product_name_fr'].replace("'", "")+"\'"
+                        nutrition_grade = "\'"+value['nutrition_grade_fr'].replace("'", "")+"\'"
+                        ingredients = "\'"+value['ingredients_text'].replace("'", "")+"\'"
+                        store_tags = "\'"+", ".join(value['stores_tags']).replace("'", "")+"\'"
+                        url = "\'"+value['url'].replace("'", "")+"\'"
 
-                for elt, value in zip(self.categories, data['products']):
 
-                    product_name = "\'"+value['product_name_fr'].replace("'", "")+"\'"
-                    nutrition_grade = "\'"+value['nutrition_grade_fr'].replace("'", "")+"\'"
-                    ingredients = "\'"+value['ingredients_text'].replace("'", "")+"\'"
-                    store_tags = "\'"+", ".join(value['stores_tags']).replace("'", "")+"\'"
-                    url = "\'"+value['url'].replace("'", "")+"\'"
+                        insert_data_food = ("""INSERT IGNORE INTO Food (name_food, category_id, nutriscore, description, 
+                                            store, link) VALUES({0}, {1}, {2}, {3}, {4}, {5});"""
+                                            .format(product_name, i + 1, nutrition_grade, ingredients, store_tags, url))
 
-                    insert_data_food = ("""INSERT IGNORE INTO Food (name_food, category_id, nutriscore, description, 
-                                        store, link) VALUES({0}, {1}, {2}, {3}, {4}, {5});"""
-                                        .format(product_name, self.i, nutrition_grade, ingredients, store_tags, url))
+                        self.cursor.execute(insert_data_food)
+                        self.data_base.commit()
 
-                    print(insert_data_food)
-                    self.cursor.execute(insert_data_food)
-                    self.data_base.commit()
 
         except KeyError:
             pass

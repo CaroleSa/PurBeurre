@@ -27,7 +27,7 @@ class User:
         self.dict_food = {}
 
     def first_question(self):
-        # First question at the user :
+        # first question at the user :
         print("\nRenseignez votre choix avant de valider : \nchoix 1 > Quel aliment souhaitez-vous remplacer ?"
                                 "\nchoix 2 > Retrouver mes aliments substitués.")
         user_answer = input("Tapez votre choix : ")
@@ -109,15 +109,17 @@ class User:
                             LIMIT {2},1;""".format(self.user_answer_category, self.user_answer_food, line))
         result_substitute = self.cursor.fetchall()
 
-        for self.name_food_chooses, nutriscore_of_food_chooses, self.name_substitute, nutriscore, description, store, \
-            link in result_substitute:
-            if self.order_letters(nutriscore_of_food_chooses) <= self.order_letters(nutriscore) :
+        for self.name_food_chooses, nutriscore_of_food_chooses, self.name_substitute, nutriscore_substitute, \
+            description_substitute, store_substitute, link_substitute in result_substitute:
+
+            if self.order_letters(nutriscore_of_food_chooses) <= self.order_letters(nutriscore_substitute) :
                 self.no_substitute()
 
             else:
                 print("\nL'aliment", self.name_food_chooses, "(Nutriscore :", nutriscore_of_food_chooses,
-                      ") peut être remplacé par", self.name_substitute, ":\nnutriscore :", nutriscore,
-                      "\nDescription :", description, "\nMagasin(s) où le trouver :", store, "\nLien internet :", link)
+                      ") peut être remplacé par", self.name_substitute, ":\nnutriscore :", nutriscore_substitute,
+                      "\nDescription :", description_substitute, "\nMagasin(s) où le trouver :", store_substitute,
+                      "\nLien internet :", link_substitute)
                 self.save_substitute()
 
     def no_substitute(self):
@@ -167,13 +169,15 @@ class User:
         self.cursor.execute("""SELECT Favorite.id, Food.name_food
                             FROM Food 
                             JOIN Favorite ON Food.id = Favorite.substitute_chooses 
-                            WHERE Food.id = Favorite.substitute_chooses;""")
+                            WHERE Food.id = Favorite.substitute_chooses
+                            ORDER BY Favorite.id;""")
         show_favorite_substitute_id = self.cursor.fetchall()
 
         self.cursor.execute("""SELECT Food.name_food 
                             FROM Food
                             JOIN Favorite ON Food.id = Favorite.id_food
-                            WHERE Food.id = Favorite.id_food;""")
+                            WHERE Food.id = Favorite.id_food
+                            ORDER BY Favorite.id;""")
         show_food_substitute = self.cursor.fetchall()
 
         print("\nVoici vos aliments substitués enregistrés :\nchoix 0 > quitter mes substituts enregistrés")

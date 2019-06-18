@@ -24,6 +24,7 @@ class User:
         self.name_food_chooses = ""
         self.name_substitute = ""
         self.i = 0
+        self.dict_food = {}
 
     def first_question(self):
         # First question at the user :
@@ -46,7 +47,7 @@ class User:
 
         # display of categories
         self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("SELECT id, categories FROM Category;")
+        self.cursor.execute("SELECT id, categories FROM Category ORDER BY id;")
         result_categories = self.cursor.fetchall()
         for id, categories in result_categories:
             print("choix", id, ">", categories)
@@ -75,8 +76,11 @@ class User:
                             FROM Food
                             WHERE category_id = {};""".format(self.user_answer_category))
         result_food = self.cursor.fetchall()
+        i = 0
         for id, name_food in result_food:
-            print("choix", id, ">", name_food)
+            i += 1
+            print("choix", i, ">", name_food)
+            self.dict_food[i] = id
 
         # the user chooses one food
         self.user_answer_food = input("Votre choix : ")
@@ -95,6 +99,7 @@ class User:
     def proposed_substitute_favorite(self, line):
         # Detail of the proposed food substitute and choice to save it
         self.cursor.execute("USE Purbeurre;")
+        self.user_answer_food = self.dict_food.get(int(self.user_answer_food))
         self.cursor.execute("""SELECT (SELECT name_food FROM Food WHERE id = {1}) as name_food_chooses, 
                             (SELECT nutriscore FROM Food WHERE id = {1}) as nutriscore_of_food_chooses, 
                             name_food, nutriscore, description, store, link
@@ -106,8 +111,7 @@ class User:
 
         for self.name_food_chooses, nutriscore_of_food_chooses, self.name_substitute, nutriscore, description, store, \
             link in result_substitute:
-            if nutriscore_of_food_chooses == nutriscore \
-                    or self.order_letters(nutriscore_of_food_chooses) < self.order_letters(nutriscore) :
+            if self.order_letters(nutriscore_of_food_chooses) <= self.order_letters(nutriscore) :
                 self.no_substitute()
 
             else:
@@ -136,7 +140,7 @@ class User:
 
         try:
             if self.user_answer_save_food == "1":
-                 save_favorite_substitute = """INSERT INTO Favorite (id_food, substitute_chooses)
+                 save_favorite_substitute = """INSERT IGNORE INTO Favorite (id_food, substitute_chooses)
                                             VALUES({0}, (SELECT id FROM Food WHERE name_food = {1}));"""\
                                             .format(int(self.user_answer_food), "\'"+self.name_substitute+"\'")
                  print(save_favorite_substitute)
@@ -185,14 +189,15 @@ class User:
                     and int(user_answer_choice_substitute) != 0:
                 self.cursor.execute("""SELECT name_food, nutriscore, description, store, link
                                     FROM Food 
-                                    WHERE Food.id = {};""".format(int(user_answer_choice_substitute)))
+                                    WHERE id = (SELECT substitute_chooses FROM Favorite WHERE id = {});"""
+                                    .format(int(user_answer_choice_substitute)))
                 show_substitute = self.cursor.fetchall()
 
                 for name_substitute, nutriscore_substitute, description_substitute, store_substitute, link_substitute \
                         in show_substitute :
-                    print("\nAliment : ", name_substitute, "\n Nutriscore : ", nutriscore,
-                          "\n Description : ", description, "\n Magasin(s) où le trouver : ", nutriscore,
-                          "\n Lien d'information : ", nutriscore)
+                    print("\nAliment : ", name_substitute, "\nNutriscore : ", nutriscore_substitute,
+                          "\nDescription : ", description_substitute, "\nMagasin(s) où le trouver : ", store_substitute,
+                          "\nLien d'information : ", link_substitute)
                 self.return_menu()
             elif int(user_answer_choice_substitute) == 0:
                 self.return_menu()

@@ -118,7 +118,7 @@ class User:
                             name_food, nutriscore, description, store, link
                             FROM Food
                             WHERE category_id = {0}
-                            ORDER BY nutriscore ASC
+                            ORDER BY nutriscore
                             LIMIT {2},1;""".format(self.user_answer_category, self.user_answer_food, line))
         result_substitute = self.cursor.fetchall()
 

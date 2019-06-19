@@ -15,7 +15,7 @@ link VARCHAR(300)
 CREATE TABLE Favorite(
 id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 id_food INT UNSIGNED NOT NULL,
-substitute_chooses INT UNSIGNED NOT NULL
+id_substitute_chooses INT UNSIGNED NOT NULL
 )
 ENGINE = InnoDB;
 
@@ -34,4 +34,4 @@ ALTER TABLE Favorite
 ADD CONSTRAINT fk_favorite_id_food FOREIGN KEY (id_food) REFERENCES Food (id);
 
 ALTER TABLE Favorite
-ADD CONSTRAINT fk_favorite_substitute_chooses FOREIGN KEY (substitute_chooses) REFERENCES Food (id);
+ADD CONSTRAINT fk_favorite_substitute_chooses FOREIGN KEY (id_substitute_chooses) REFERENCES Food (id);

@@ -1,34 +1,38 @@
 #! /usr/bin/env python3
 # coding: UTF-8
 
-"""Creation database"""
+""" Class Database """
 
+
+
+# import library
 import mysql.connector
 import json
 import requests
 
 
+
 class Database:
+    """ Creation database and insert data """
 
     def __init__(self):
-        # connection at MySQL and creation cursor
+        """ Connection at MySQL, creation cursor and list of chosen categories """
         f = open('connection.yml', 'r')
         info = f.read().split()
         self.data_base = mysql.connector.connect(user=info[0], password=info[1], host=info[2])
         self.cursor = self.data_base.cursor()
+
         self.categories = ['pizza', 'pate a tartiner', 'gateau', 'yaourt', 'bonbon']
         self.list_data = []
 
-
     def creation_database(self):
-        # running file "base.sql" requests : for the creation of the database
+        """ Running file "base.sql" requests : for the creation of the database """
         with open("base.sql", "r") as file:
             base = file.read()
             self.cursor.execute(base)
-        print('Création de la database ok !!!!')
 
     def load_insert_data(self):
-        # loading data of API Openfoodfacts, convert to json and inserting data into the database
+        """ Loading data of API Openfoodfacts, convert to json and inserting data into the database """
         try:
             self.cursor.execute("use purbeurre;")
 
@@ -39,15 +43,14 @@ class Database:
                                 "axis_y=products_n&action=display&json=1".format("\'"+elt+"\'"))
                 data = json.loads(r.text)
                 self.list_data.append(data)
-            print(len(self.list_data))
 
-            for i, elt in enumerate(self.categories) :
+
                 # inserting data into Category table
                 insert_data_category = ("""INSERT IGNORE INTO Category (categories) VALUES({});""".format("\'"+elt+"\'"))
                 self.cursor.execute(insert_data_category)
                 self.data_base.commit()
 
-                for element in self.list_data:
+                for i, element in enumerate(self.list_data):
                     for value in element['products']:
                         product_name = "\'"+value['product_name_fr'].replace("'", "")+"\'"
                         nutrition_grade = "\'"+value['nutrition_grade_fr'].replace("'", "")+"\'"
@@ -55,14 +58,14 @@ class Database:
                         store_tags = "\'"+", ".join(value['stores_tags']).replace("'", "")+"\'"
                         url = "\'"+value['url'].replace("'", "")+"\'"
 
-
-                        insert_data_food = ("""INSERT IGNORE INTO Food (name_food, category_id, nutriscore, description, 
-                                            store, link) VALUES({0}, {1}, {2}, {3}, {4}, {5});"""
-                                            .format(product_name, i + 1, nutrition_grade, ingredients, store_tags, url))
-
-                        self.cursor.execute(insert_data_food)
-                        self.data_base.commit()
-
+                        while i <= len(self.list_data):
+                            insert_data_food = ("""INSERT IGNORE INTO Food (name_food, category_id, nutriscore, description, 
+                                                store, link) VALUES({0}, (SELECT id FROM Category WHERE categories = {1}),
+                                                {2}, {3}, {4}, {5});"""
+                                                .format(product_name, "\'"+elt+"\'", nutrition_grade, ingredients, store_tags, url))
+                            print(insert_data_food)
+                            self.cursor.execute(insert_data_food)
+                            self.data_base.commit()
 
         except KeyError:
             pass

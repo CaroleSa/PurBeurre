@@ -54,25 +54,25 @@ class Database:
 
                 for value in element['products']:
 
-                    while element['products']
-                    try:
-                        product_name = "\'"+value['product_name_fr'].replace("'", "")+"\'"
-                        nutrition_grade = "\'"+value['nutrition_grade_fr'].replace("'", "")+"\'"
-                        ingredients = "\'"+value['ingredients_text'].replace("'", "")+"\'"
-                        store_tags = "\'"+", ".join(value['stores_tags']).replace("'", "")+"\'"
-                        url = "\'"+value['url'].replace("'", "")+"\'"
+                    if element['products'].index(value) < 20:
+                        try:
+                            product_name = "\'"+value['product_name_fr'].replace("'", "")+"\'"
+                            nutrition_grade = "\'"+value['nutrition_grade_fr'].replace("'", "")+"\'"
+                            ingredients = "\'"+value['ingredients_text'].replace("'", "")+"\'"
+                            store_tags = "\'"+", ".join(value['stores_tags']).replace("'", "")+"\'"
+                            url = "\'"+value['url'].replace("'", "")+"\'"
 
 
-                        insert_data_food = ("""INSERT IGNORE INTO Food (name_food, category_id, nutriscore, description, 
-                                            store, link) VALUES({0}, (SELECT id FROM Category WHERE categories = {1}),
-                                            {2}, {3}, {4}, {5});"""
-                                            .format(product_name, "\'"+elt+"\'", nutrition_grade, ingredients, store_tags, url))
-                        print(insert_data_food)
-                        self.cursor.execute(insert_data_food)
-                        self.data_base.commit()
+                            insert_data_food = ("""INSERT IGNORE INTO Food (name_food, category_id, nutriscore, description, 
+                                                store, link) VALUES({0}, (SELECT id FROM Category WHERE categories = {1}),
+                                                {2}, {3}, {4}, {5});"""
+                                                .format(product_name, "\'"+elt+"\'", nutrition_grade, ingredients, store_tags, url))
+                            print(insert_data_food)
+                            self.cursor.execute(insert_data_food)
+                            self.data_base.commit()
 
-                    except KeyError:
-                        continue
+                        except KeyError:
+                            continue
 
 
         except (mysql.connector.errors.OperationalError, mysql.connector.errors.DatabaseError) as m:

@@ -36,7 +36,7 @@ class Database:
         try:
             self.cursor.execute("use purbeurre;")
 
-            for i, elt in enumerate(self.categories):
+            for elt in self.categories:
                 # inserting data into Food table
                 r = requests.get("https://fr.openfoodfacts.org/cgi/search.pl?action=process&tagtype_0=categories&tag_"
                                 "contains_0=contains&tag_0={0}&sort_by=unique_scans_n&page_size=1000&axis_x=energy&"
@@ -45,30 +45,35 @@ class Database:
                 self.list_data.append(data)
 
 
+            for elt, element in zip(self.categories, self.list_data):
                 # inserting data into Category table
                 insert_data_category = ("""INSERT IGNORE INTO Category (categories) VALUES({});""".format("\'"+elt+"\'"))
                 self.cursor.execute(insert_data_category)
                 self.data_base.commit()
+                print(elt)
 
-                for i, element in enumerate(self.list_data):
-                    for value in element['products']:
+                for value in element['products']:
+
+                    while element['products']
+                    try:
                         product_name = "\'"+value['product_name_fr'].replace("'", "")+"\'"
                         nutrition_grade = "\'"+value['nutrition_grade_fr'].replace("'", "")+"\'"
                         ingredients = "\'"+value['ingredients_text'].replace("'", "")+"\'"
                         store_tags = "\'"+", ".join(value['stores_tags']).replace("'", "")+"\'"
                         url = "\'"+value['url'].replace("'", "")+"\'"
 
-                        while i <= len(self.list_data):
-                            insert_data_food = ("""INSERT IGNORE INTO Food (name_food, category_id, nutriscore, description, 
-                                                store, link) VALUES({0}, (SELECT id FROM Category WHERE categories = {1}),
-                                                {2}, {3}, {4}, {5});"""
-                                                .format(product_name, "\'"+elt+"\'", nutrition_grade, ingredients, store_tags, url))
-                            print(insert_data_food)
-                            self.cursor.execute(insert_data_food)
-                            self.data_base.commit()
 
-        except KeyError:
-            pass
+                        insert_data_food = ("""INSERT IGNORE INTO Food (name_food, category_id, nutriscore, description, 
+                                            store, link) VALUES({0}, (SELECT id FROM Category WHERE categories = {1}),
+                                            {2}, {3}, {4}, {5});"""
+                                            .format(product_name, "\'"+elt+"\'", nutrition_grade, ingredients, store_tags, url))
+                        print(insert_data_food)
+                        self.cursor.execute(insert_data_food)
+                        self.data_base.commit()
+
+                    except KeyError:
+                        continue
+
 
         except (mysql.connector.errors.OperationalError, mysql.connector.errors.DatabaseError) as m:
             print("Insertion de données ne marche pas, voici le message d'erreur :", m)

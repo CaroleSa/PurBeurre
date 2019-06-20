@@ -112,14 +112,18 @@ class User:
     def proposed_substitute(self, line):
         # Detail of the proposed food substitute and choice to save it
         self.cursor.execute("USE Purbeurre;")
-        self.user_answer_food = self.dict_food.get(int(self.user_answer_food))
-        self.cursor.execute("""SELECT (SELECT name_food FROM Food WHERE id = {1}) as name_food_chooses, 
+        if line == 0:
+            self.user_answer_food = self.dict_food.get(int(self.user_answer_food))
+
+        select_substitute = """SELECT (SELECT name_food FROM Food WHERE id = {1}) as name_food_chooses, 
                             (SELECT nutriscore FROM Food WHERE id = {1}) as nutriscore_of_food_chooses, 
                             name_food, nutriscore, description, store, link
                             FROM Food
                             WHERE category_id = {0}
                             ORDER BY nutriscore
-                            LIMIT {2},1;""".format(self.user_answer_category, self.user_answer_food, line))
+                            LIMIT {2},1;""".format(self.user_answer_category, self.user_answer_food, line)
+        self.cursor.execute(select_substitute)
+
         result_substitute = self.cursor.fetchall()
 
         for self.name_food_chooses, nutriscore_of_food_chooses, self.name_substitute, nutriscore_substitute, \
@@ -166,7 +170,6 @@ class User:
                 print("\nEnregistrement non effectué pour le substitut", self.name_substitute+".")
                 self.first_question()
             elif self.user_answer_save_food == "3":
-                print(self.i)
                 self.i += 1
                 self.proposed_substitute(0 + self.i)
             else:

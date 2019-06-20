@@ -21,7 +21,6 @@ class User:
 
         self.user_answer_category = 0
         self.user_answer_food = 0
-        self.user_answer_choice_substitute = 0
         self.name_food_chooses = ""
         self.name_substitute = ""
         self.i = 0
@@ -201,19 +200,19 @@ class User:
             for id_name_substitute, name_food_substitute in zip(show_favorite_substitute, show_food_substitute):
                 print("choix", id_name_substitute[0], ">", id_name_substitute[1], "(substitut de", name_food_substitute[0]+")")
 
-            self.user_answer_choice_substitute = input("Tapez un choix pour plus de détail : ")
+            user_answer_choice_substitute = input("Tapez un choix pour plus de détail : ")
 
-            self.detail_substitute(show_food_substitute)
+            self.detail_substitute(show_food_substitute, user_answer_choice_substitute)
 
-    def detail_substitute(self, data):
+    def detail_substitute(self, data, choice_substitute):
         # if wrong answer
         try:
-            if int(self.user_answer_choice_substitute) <= len(data) \
-                    and int(self.user_answer_choice_substitute) != 0:
+            if int(choice_substitute) <= len(data) \
+                    and int(choice_substitute) != 0:
                 self.cursor.execute("""SELECT name_food, nutriscore, description, store, link
                                     FROM Food 
                                     WHERE id = (SELECT id_substitute_chooses FROM Favorite WHERE id = {});"""
-                                    .format(int(self.user_answer_choice_substitute)))
+                                    .format(int(choice_substitute)))
                 show_substitute = self.cursor.fetchall()
 
                 for name_substitute, nutriscore_substitute, description_substitute, store_substitute, link_substitute \
@@ -230,15 +229,15 @@ class User:
                         self.answer_choice_2()
                     else:
                         print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2")
-                        self.detail_substitute()
+                        self.detail_substitute(data, choice_substitute)
 
-            elif int(self.user_answer_choice_substitute) == 0:
+            elif int(choice_substitute) == 0:
                 self.first_question()
             else:
-                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(show_food_substitute), ".")
+                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(data), ".")
                 self.answer_choice_2()
         except ValueError:
-            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(show_food_substitute), ".")
+            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(data), ".")
             self.answer_choice_2()
 
     def order_letters(self, letter):

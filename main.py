@@ -24,23 +24,23 @@ class User:
         self.user_answer_i_food = 0
         self.dict_equivalence_i_id_food = {}
 
-    def first_question(self):
+    def menu(self):
         # first question at the user :
         print("\nRenseignez votre choix avant de valider : \nchoix 1 > Quel aliment souhaitez-vous remplacer ?"
                                 "\nchoix 2 > Retrouver mes aliments substitués \nchoix 3 > Quitter")
-        user_answer = input("Tapez votre choix : ")
+        user_answer_choice_menu = input("Tapez votre choix : ")
 
-        if str(user_answer) == "1":
-            self.answer_choice_1_category()
-        elif str(user_answer) == "2":
-            self.answer_choice_2()
-        elif str(user_answer) == "3":
+        if str(user_answer_choice_menu) == "1":
+            self.proposed_category()
+        elif str(user_answer_choice_menu) == "2":
+            self.show_food_substitute()
+        elif str(user_answer_choice_menu) == "3":
             print("\nMerci pour votre visite et à bientôt !")
         else:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
-            self.first_question()
+            self.menu()
 
-    def answer_choice_1_category(self):
+    def proposed_category(self):
         # if the user chooses the option 1,
         # he chooses the category :
         print("\nRenseignez le numéro de la catégorie choisie :")
@@ -48,9 +48,9 @@ class User:
         # display of categories
         self.cursor.execute("USE Purbeurre;")
         self.cursor.execute("SELECT id, categories FROM Category ORDER BY id;")
-        result_categories = self.cursor.fetchall()
+        all_id_name_categories = self.cursor.fetchall()
         print("choix 0 > Retourner au menu")
-        for id, categories in result_categories:
+        for id, categories in all_id_name_categories:
             print("choix", id, ">", categories)
 
         # the user chooses one category
@@ -58,18 +58,21 @@ class User:
 
         # if wrong answer
         try:
-            if int(self.user_answer_id_category) <= len(result_categories) and int(self.user_answer_id_category) != 0:
-                self.answer_choice_1_food()
+            if int(self.user_answer_id_category) <= len(all_id_name_categories) \
+                    and int(self.user_answer_id_category) != 0:
+                self.proposed_food()
             elif int(self.user_answer_id_category) == 0:
-                self.first_question()
+                self.menu()
             else:
-                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(result_categories), ".")
-                self.answer_choice_1_category()
+                print("\nCE CHOIX N'EXISTE PAS. "
+                      "\nVeuillez taper un chiffre entre 0 et", len(all_id_name_categories), ".")
+                self.proposed_category()
         except ValueError:
-            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(result_categories), ".")
-            self.answer_choice_1_category()
+            print("\nCE CHOIX N'EXISTE PAS. "
+                  "\nVeuillez taper un chiffre entre 0 et", len(all_id_name_categories), ".")
+            self.proposed_category()
 
-    def answer_choice_1_food(self):
+    def proposed_food(self):
         # he chooses the food of the category :
         print("\nRenseignez le numéro de l'aliment choisi :")
 
@@ -78,11 +81,11 @@ class User:
         self.cursor.execute("""SELECT id, name_food 
                             FROM Food
                             WHERE category_id = {};""".format(self.user_answer_id_category))
-        result_food = self.cursor.fetchall()
+        all_id_name_food = self.cursor.fetchall()
 
         print("choix 0 > Retourner aux catégories")
         i = 0
-        for id, name_food in result_food:
+        for id, name_food in all_id_name_food:
             i += 1
             print("choix", i, ">", name_food)
             self.dict_equivalence_i_id_food[i] = id
@@ -92,22 +95,22 @@ class User:
 
         # if wrong answer
         try:
-            if int(self.user_answer_i_food) <= len(result_food) and int(self.user_answer_i_food) != 0:
+            if int(self.user_answer_i_food) <= len(all_id_name_food) and int(self.user_answer_i_food) != 0:
                 self.proposed_substitute(0)
             elif int(self.user_answer_i_food) == 0:
-                self.answer_choice_1_category()
+                self.proposed_category()
             else:
-                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(result_food), ".")
-                self.answer_choice_1_food()
+                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(all_id_name_food), ".")
+                self.proposed_food()
         except ValueError:
-            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(result_food), ".")
-            self.answer_choice_1_food()
+            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(all_id_name_food), ".")
+            self.proposed_food()
 
-    def proposed_substitute(self, read_line):
+    def proposed_substitute(self, read_line_substitute):
         # Detail of the proposed food substitute and choice to save it
         self.cursor.execute("USE Purbeurre;")
-        if read_line == 0:
-            self.user_answer_id_food = self.dict_equivalence_i_id_food.get(int(self.user_answer_i_food))
+
+        user_answer_id_food = self.dict_equivalence_i_id_food.get(int(self.user_answer_i_food))
 
         select_substitute = """SELECT (SELECT name_food FROM Food WHERE id = {1}) as name_food_chooses, 
                             (SELECT nutriscore FROM Food WHERE id = {1}) as nutriscore_of_food_chooses, 
@@ -115,13 +118,13 @@ class User:
                             FROM Food
                             WHERE category_id = {0}
                             ORDER BY nutriscore LIMIT {2},1;"""\
-                            .format(self.user_answer_id_category, self.user_answer_id_food, read_line)
+                            .format(self.user_answer_id_category, user_answer_id_food, read_line_substitute)
         self.cursor.execute(select_substitute)
 
-        result_substitute = self.cursor.fetchall()
+        result_food_chooses_and_substitute = self.cursor.fetchall()
 
         for name_food_chooses, nutriscore_of_food_chooses, name_substitute, nutriscore_substitute, \
-            description_substitute, store_substitute, link_substitute in result_substitute:
+            description_substitute, store_substitute, link_substitute in result_food_chooses_and_substitute:
 
             if self.order_letters(nutriscore_of_food_chooses) < self.order_letters(nutriscore_substitute) :
                 self.no_substitute(name_food_chooses)
@@ -131,49 +134,49 @@ class User:
                       ") peut être remplacé par", name_substitute, ":\nnutriscore :", nutriscore_substitute,
                       "\nDescription :", description_substitute, "\nMagasin(s) où le trouver :", store_substitute,
                       "\nLien internet :", link_substitute)
-                self.save_substitute(name_substitute, read_line)
+                self.save_substitute(name_substitute, read_line_substitute, user_answer_id_food)
 
     def no_substitute(self, name_food):
         print("\nL'aliment", name_food, "n'a pas d'autres substituts possibles.\n"
               "Souhaitez-vous faire une nouvelle recherche ? \nchoix 1 > Oui \nchoix 2 > Non")
         user_answer_new_search = input("Votre choix : ")
         if user_answer_new_search == "1":
-            self.answer_choice_1_category()
+            self.proposed_category()
         elif user_answer_new_search == "2":
-            self.first_question()
+            self.menu()
         else:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
             self.no_substitute(name_food)
 
-    def save_substitute(self, name_substitute, read_line):
+    def save_substitute(self, name_substitute, read_line_substitute, user_answer_id_food):
         # Confirmation of registration
-        print("\nSouhaitez-vous enregistrer ce substitut ? \nchoix 1 > Oui \nchoix 2 > Non "
+        print("\nSouhaitez-vous enregistrer l'aliment et son substitut ? \nchoix 1 > Oui \nchoix 2 > Non "
               "\nchoix 3 > Je souhaite un autre substitut possible")
         user_answer_save_food = input("Votre choix : ")
 
         try:
             if user_answer_save_food == "1":
-                 save_favorite_substitute = """INSERT IGNORE INTO Favorite (id_food, id_substitute_chooses)
+                 save_favorite_food_substitute = """INSERT IGNORE INTO Favorite (id_food, id_substitute_chooses)
                                             VALUES({0}, (SELECT id FROM Food WHERE name_food = {1}));"""\
-                                            .format(int(self.user_answer_id_food), "\'"+name_substitute+"\'")
-                 self.cursor.execute(save_favorite_substitute)
+                                            .format(int(user_answer_id_food), "\'"+name_substitute+"\'")
+                 self.cursor.execute(save_favorite_food_substitute)
                  self.data_base.commit()
-                 print("\nNous avons bien enregistré le substitut", name_substitute+".")
-                 self.first_question()
+                 print("\nNous avons bien enregistré l'aliment et son substitut", name_substitute+".")
+                 self.menu()
             elif user_answer_save_food == "2":
-                print("\nEnregistrement non effectué pour le substitut", name_substitute+".")
-                self.first_question()
+                print("\nEnregistrement non effectué.")
+                self.menu()
             elif user_answer_save_food == "3":
-                read_line += 1
-                self.proposed_substitute(0 + read_line)
+                read_line_substitute += 1
+                self.proposed_substitute(0 + read_line_substitute)
             else:
                 print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
-                self.save_substitute(name_substitute)
+                self.save_substitute(name_substitute, read_line_substitute, user_answer_id_food)
         except ValueError:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
-            self.save_substitute(name_substitute)
+            self.save_substitute(name_substitute, read_line_substitute, user_answer_id_food)
 
-    def answer_choice_2(self):
+    def show_food_substitute(self):
         # If the user chooses the option 2 :
         self.cursor.execute("USE Purbeurre;")
         self.cursor.execute("""SELECT Favorite.id, Food.name_food
@@ -181,37 +184,37 @@ class User:
                             JOIN Favorite ON Food.id = Favorite.id_substitute_chooses 
                             WHERE Food.id = Favorite.id_substitute_chooses
                             ORDER BY Favorite.id;""")
-        show_favorite_substitute = self.cursor.fetchall()
+        all_id_name_substitute = self.cursor.fetchall()
 
         self.cursor.execute("""SELECT Food.name_food 
                             FROM Food
                             JOIN Favorite ON Food.id = Favorite.id_food
                             WHERE Food.id = Favorite.id_food
                             ORDER BY Favorite.id;""")
-        show_food_substitute = self.cursor.fetchall()
+        all_food_substitute = self.cursor.fetchall()
 
-        if len(show_favorite_substitute) == 0:
+        if len(all_id_name_substitute) == 0:
             print("\nVous n'avez pas encore enregistré de substituts")
-            self.first_question()
+            self.menu()
         else:
-            print("\nVoici vos aliments substitués enregistrés :\nchoix 0 > quitter mes substituts enregistrés")
-            for id_name_substitute, name_food_substitute in zip(show_favorite_substitute, show_food_substitute):
+            print("\nVoici vos aliments et substitus enregistrés :\nchoix 0 > quitter mes substituts enregistrés")
+            for id_name_substitute, name_food_substitute in zip(all_id_name_substitute, all_food_substitute):
                 print("choix", id_name_substitute[0], ">", name_food_substitute[0],
                       "(substitué par", id_name_substitute[1]+")")
 
-            user_answer_choice_substitute = input("Tapez un choix pour avoir plus de détail sur le substitut : ")
+            user_answer_choice_id_substitute = input("Tapez un choix pour avoir plus de détail sur le substitut : ")
 
-            self.detail_substitute(show_food_substitute, user_answer_choice_substitute)
+            self.detail_substitute(all_food_substitute, user_answer_choice_id_substitute)
 
-    def detail_substitute(self, data, choice_substitute):
+    def detail_substitute(self, all_food_substitute, user_answer_choice_id_substitute):
         # if wrong answer
         try:
-            if int(choice_substitute) <= len(data) \
-                    and int(choice_substitute) != 0:
+            if int(user_answer_choice_id_substitute) <= len(all_food_substitute) \
+                    and int(user_answer_choice_id_substitute) != 0:
                 self.cursor.execute("""SELECT name_food, nutriscore, description, store, link
                                     FROM Food 
                                     WHERE id = (SELECT id_substitute_chooses FROM Favorite WHERE id = {});"""
-                                    .format(int(choice_substitute)))
+                                    .format(int(user_answer_choice_id_substitute)))
                 show_substitute = self.cursor.fetchall()
 
                 for name_substitute, nutriscore_substitute, description_substitute, store_substitute, link_substitute \
@@ -223,28 +226,28 @@ class User:
                     user_answer_return_substitute_menu = input("Votre choix : ")
 
                     if int(user_answer_return_substitute_menu) == 1 :
-                        self.first_question()
+                        self.menu()
                     elif int(user_answer_return_substitute_menu) == 2 :
-                        self.answer_choice_2()
+                        self.show_food_substitute()
                     else:
                         print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2")
-                        self.detail_substitute(data, choice_substitute)
+                        self.detail_substitute(all_food_substitute, user_answer_choice_id_substitute)
 
-            elif int(choice_substitute) == 0:
-                self.first_question()
+            elif int(user_answer_choice_id_substitute) == 0:
+                self.menu()
             else:
-                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(data), ".")
-                self.answer_choice_2()
+                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(all_food_substitute), ".")
+                self.show_food_substitute()
         except ValueError:
-            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(data), ".")
-            self.answer_choice_2()
+            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(all_food_substitute), ".")
+            self.show_food_substitute()
 
     def order_letters(self, letter):
         return int(ord(letter) - ord('a') + 1)
 
 # instantiate the class User and call User() method
 new_user = User()
-new_user.first_question()
+new_user.menu()
 
 def main():
     """ use of class Database """

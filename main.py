@@ -202,7 +202,8 @@ class User:
                 print("choix", id_name_substitute[0], ">", name_food_substitute[0],
                       "(substitué par", id_name_substitute[1]+")")
 
-            user_answer_choice_id_substitute = input("Tapez un choix pour avoir plus de détail sur le substitut : ")
+            user_answer_choice_id_substitute = input("Tapez un choix pour avoir plus de détail sur le substitut "
+                                                     "ou le supprimer : ")
 
             self.detail_substitute(all_food_substitute, user_answer_choice_id_substitute)
 
@@ -222,13 +223,16 @@ class User:
                     print("\nAliment : ", name_substitute, "\nNutriscore : ", nutriscore_substitute,
                           "\nDescription : ", description_substitute, "\nMagasin(s) où le trouver : ", store_substitute,
                           "\nLien d'information : ", link_substitute, "\n\nVous souhaitez : "
-                          "\nchoix 1 : retourner au menu \nchoix 2 : voir un autre aliment substitué enregistré")
-                    user_answer_return_substitute_menu = input("Votre choix : ")
+                          "\nchoix 1 : supprimer cet aliment\nchoix 2 : chercher un autre aliment substitué enregistré"
+                          "\nchoix 3 : retourner au menu")
+                    user_answer_return_delete_substitute_menu = input("Votre choix : ")
 
-                    if int(user_answer_return_substitute_menu) == 1 :
-                        self.menu()
-                    elif int(user_answer_return_substitute_menu) == 2 :
+                    if int(user_answer_return_delete_substitute_menu) == 1 :
+                        self.delete_food_substitute(user_answer_choice_id_substitute)
+                    elif int(user_answer_return_delete_substitute_menu) == 2 :
                         self.show_food_substitute()
+                    elif int(user_answer_return_delete_substitute_menu) == 3 :
+                        self.menu()
                     else:
                         print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2")
                         self.detail_substitute(all_food_substitute, user_answer_choice_id_substitute)
@@ -241,6 +245,14 @@ class User:
         except ValueError:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(all_food_substitute), ".")
             self.show_food_substitute()
+
+    def delete_food_substitute(self, user_answer_choice_id_substitute):
+
+        self.cursor.execute("USE Purbeurre;")
+        self.cursor.execute("""DELETE FROM Favorite where id = {};""".format(int(user_answer_choice_id_substitute)))
+        self.data_base.commit()
+        print("L'aliment a bien été supprimé.")
+        self.show_food_substitute()
 
     def order_letters(self, letter):
         return int(ord(letter) - ord('a') + 1)

@@ -22,7 +22,6 @@ class User:
         self.user_answer_category = 0
         self.user_answer_food = 0
         self.dict_food = {}
-        self.i = 0
 
     def first_question(self):
         # first question at the user :
@@ -93,7 +92,7 @@ class User:
         # if wrong answer
         try:
             if int(self.user_answer_food) <= len(result_food) and int(self.user_answer_food) != 0:
-                self.proposed_substitute(0, self.dict_food)
+                self.proposed_substitute(0)
             elif int(self.user_answer_food) == 0:
                 self.answer_choice_1_category()
             else:
@@ -164,8 +163,8 @@ class User:
                 print("\nEnregistrement non effectué pour le substitut", name_substitute+".")
                 self.first_question()
             elif user_answer_save_food == "3":
-                self.i += 1
-                self.proposed_substitute(0 + self.i)
+                i += 1
+                self.proposed_substitute(0 + i)
             else:
                 print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
                 self.save_substitute(name_substitute)

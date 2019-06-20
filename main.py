@@ -21,7 +21,6 @@ class User:
 
         self.user_answer_category = 0
         self.user_answer_food = 0
-        self.name_substitute = ""
         self.i = 0
         self.dict_food = {}
 
@@ -121,7 +120,7 @@ class User:
 
         result_substitute = self.cursor.fetchall()
 
-        for name_food_chooses, nutriscore_of_food_chooses, self.name_substitute, nutriscore_substitute, \
+        for name_food_chooses, nutriscore_of_food_chooses, name_substitute, nutriscore_substitute, \
             description_substitute, store_substitute, link_substitute in result_substitute:
 
             if self.order_letters(nutriscore_of_food_chooses) <= self.order_letters(nutriscore_substitute) :
@@ -129,10 +128,10 @@ class User:
 
             else:
                 print("\nL'aliment", name_food_chooses, "(Nutriscore :", nutriscore_of_food_chooses,
-                      ") peut être remplacé par", self.name_substitute, ":\nnutriscore :", nutriscore_substitute,
+                      ") peut être remplacé par", name_substitute, ":\nnutriscore :", nutriscore_substitute,
                       "\nDescription :", description_substitute, "\nMagasin(s) où le trouver :", store_substitute,
                       "\nLien internet :", link_substitute)
-                self.save_substitute()
+                self.save_substitute(name_substitute)
 
     def no_substitute(self, name_food):
         print("\nL'aliment", name_food, "n'a pas d'autres substituts possibles.\n"
@@ -146,7 +145,7 @@ class User:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
             self.no_substitute(name_food)
 
-    def save_substitute(self):
+    def save_substitute(self, name_substitute):
         # Confirmation of registration
         print("\nSouhaitez-vous enregistrer ce substitut ? \nchoix 1 > Oui \nchoix 2 > Non "
               "\nchoix 3 > Je souhaite un autre substitut possible")
@@ -156,13 +155,13 @@ class User:
             if user_answer_save_food == "1":
                  save_favorite_substitute = """INSERT IGNORE INTO Favorite (id_food, id_substitute_chooses)
                                             VALUES({0}, (SELECT id FROM Food WHERE name_food = {1}));"""\
-                                            .format(int(self.user_answer_food), "\'"+self.name_substitute+"\'")
+                                            .format(int(self.user_answer_food), "\'"+name_substitute+"\'")
                  self.cursor.execute(save_favorite_substitute)
                  self.data_base.commit()
-                 print("\nNous avons bien enregistré le substitut", self.name_substitute+".")
+                 print("\nNous avons bien enregistré le substitut", name_substitute+".")
                  self.first_question()
             elif user_answer_save_food == "2":
-                print("\nEnregistrement non effectué pour le substitut", self.name_substitute+".")
+                print("\nEnregistrement non effectué pour le substitut", name_substitute+".")
                 self.first_question()
             elif user_answer_save_food == "3":
                 self.i += 1

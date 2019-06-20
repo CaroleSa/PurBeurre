@@ -21,7 +21,6 @@ class User:
 
         self.user_answer_category = 0
         self.user_answer_food = 0
-        self.name_food_chooses = ""
         self.name_substitute = ""
         self.i = 0
         self.dict_food = {}
@@ -122,21 +121,21 @@ class User:
 
         result_substitute = self.cursor.fetchall()
 
-        for self.name_food_chooses, nutriscore_of_food_chooses, self.name_substitute, nutriscore_substitute, \
+        for name_food_chooses, nutriscore_of_food_chooses, self.name_substitute, nutriscore_substitute, \
             description_substitute, store_substitute, link_substitute in result_substitute:
 
             if self.order_letters(nutriscore_of_food_chooses) <= self.order_letters(nutriscore_substitute) :
-                self.no_substitute()
+                self.no_substitute(name_food_chooses)
 
             else:
-                print("\nL'aliment", self.name_food_chooses, "(Nutriscore :", nutriscore_of_food_chooses,
+                print("\nL'aliment", name_food_chooses, "(Nutriscore :", nutriscore_of_food_chooses,
                       ") peut être remplacé par", self.name_substitute, ":\nnutriscore :", nutriscore_substitute,
                       "\nDescription :", description_substitute, "\nMagasin(s) où le trouver :", store_substitute,
                       "\nLien internet :", link_substitute)
                 self.save_substitute()
 
-    def no_substitute(self):
-        print("\nL'aliment", self.name_food_chooses, "n'a pas d'autres substituts possibles.\n"
+    def no_substitute(self, name_food):
+        print("\nL'aliment", name_food, "n'a pas d'autres substituts possibles.\n"
               "Souhaitez-vous faire une nouvelle recherche ? \nchoix 1 > Oui \nchoix 2 > Non")
         user_answer_new_search = input("Votre choix : ")
         if user_answer_new_search == "1":
@@ -145,7 +144,7 @@ class User:
             self.first_question()
         else:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
-            self.no_substitute()
+            self.no_substitute(name_food)
 
     def save_substitute(self):
         # Confirmation of registration

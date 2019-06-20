@@ -5,8 +5,8 @@
 
 
 
-# import library
-import mysql.connector
+# import file
+import database as db
 
 
 
@@ -14,12 +14,10 @@ class User:
     """ Command line interface"""
 
     def __init__(self):
-        """new_database = db.Database()
-        self.cursor = new_database.cursor"""
-        with open('connection.yml', 'r') as f:
-            info = f.read().split()
-            self.data_base = mysql.connector.connect(user=info[0], password=info[1], host=info[2])
-            self.cursor = self.data_base.cursor()
+        # instantiate the class Database, use data_base attribute and creation cursor
+        new_database = db.Database()
+        self.data_base = new_database.data_base
+        self.cursor = self.data_base.cursor()
 
         self.user_answer_category = 0
         self.user_answer_food = 0
@@ -69,10 +67,10 @@ class User:
             elif int(self.user_answer_category) == 0:
                 self.first_question()
             else:
-                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 1 et", len(result_categories), ".")
+                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(result_categories), ".")
                 self.answer_choice_1_category()
         except ValueError:
-            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 1 et", len(result_categories), ".")
+            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(result_categories), ".")
             self.answer_choice_1_category()
 
     def answer_choice_1_food(self):
@@ -196,11 +194,11 @@ class User:
                             ORDER BY Favorite.id;""")
         show_food_substitute = self.cursor.fetchall()
 
-        print("\nVoici vos aliments substitués enregistrés :\nchoix 0 > quitter mes substituts enregistrés")
         if len(show_favorite_substitute) == 0:
             print("\nVous n'avez pas encore enregistré de substituts")
             self.first_question()
         else:
+            print("\nVoici vos aliments substitués enregistrés :\nchoix 0 > quitter mes substituts enregistrés")
             for id_name_substitute, name_food_substitute in zip(show_favorite_substitute, show_food_substitute):
                 print("choix", id_name_substitute[0], ">", id_name_substitute[1], "(substitut de", name_food_substitute[0]+")")
 
@@ -247,12 +245,17 @@ class User:
     def order_letters(self, letter):
         return int(ord(letter) - ord('a') + 1)
 
-
+# instantiate the class User and call User() method
 new_user = User()
 new_user.first_question()
 
-#voir si on fait une recherche au hazard plutot pour le substitut
-#tester suppression liste data dans database
+def main():
+    """ use of class Database """
+    db.Database()
+
+if __name__ == "_main_":
+    # execute only if run as a script
+    main()
 
 
 

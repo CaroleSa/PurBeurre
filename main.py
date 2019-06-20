@@ -23,7 +23,6 @@ class User:
         self.user_answer_id_category = 0
         self.user_answer_i_food = 0
         self.dict_equivalence_i_id_food = {}
-        self.read_line = 0
 
     def first_question(self):
         # first question at the user :
@@ -94,7 +93,7 @@ class User:
         # if wrong answer
         try:
             if int(self.user_answer_i_food) <= len(result_food) and int(self.user_answer_i_food) != 0:
-                self.proposed_substitute()
+                self.proposed_substitute(0)
             elif int(self.user_answer_i_food) == 0:
                 self.answer_choice_1_category()
             else:
@@ -104,10 +103,10 @@ class User:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(result_food), ".")
             self.answer_choice_1_food()
 
-    def proposed_substitute(self):
+    def proposed_substitute(self, read_line):
         # Detail of the proposed food substitute and choice to save it
         self.cursor.execute("USE Purbeurre;")
-        if self.read_line == 0:
+        if read_line == 0:
             self.user_answer_id_food = self.dict_equivalence_i_id_food.get(int(self.user_answer_i_food))
 
         select_substitute = """SELECT (SELECT name_food FROM Food WHERE id = {1}) as name_food_chooses, 
@@ -116,7 +115,7 @@ class User:
                             FROM Food
                             WHERE category_id = {0}
                             ORDER BY nutriscore LIMIT {2},1;"""\
-                            .format(self.user_answer_id_category, self.user_answer_id_food, self.read_line)
+                            .format(self.user_answer_id_category, self.user_answer_id_food, read_line)
         self.cursor.execute(select_substitute)
 
         result_substitute = self.cursor.fetchall()
@@ -132,7 +131,7 @@ class User:
                       ") peut être remplacé par", name_substitute, ":\nnutriscore :", nutriscore_substitute,
                       "\nDescription :", description_substitute, "\nMagasin(s) où le trouver :", store_substitute,
                       "\nLien internet :", link_substitute)
-                self.save_substitute(name_substitute)
+                self.save_substitute(name_substitute, read_line)
 
     def no_substitute(self, name_food):
         print("\nL'aliment", name_food, "n'a pas d'autres substituts possibles.\n"
@@ -146,7 +145,7 @@ class User:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
             self.no_substitute(name_food)
 
-    def save_substitute(self, name_substitute):
+    def save_substitute(self, name_substitute, read_line):
         # Confirmation of registration
         print("\nSouhaitez-vous enregistrer ce substitut ? \nchoix 1 > Oui \nchoix 2 > Non "
               "\nchoix 3 > Je souhaite un autre substitut possible")
@@ -165,8 +164,8 @@ class User:
                 print("\nEnregistrement non effectué pour le substitut", name_substitute+".")
                 self.first_question()
             elif user_answer_save_food == "3":
-                self.read_line += 1
-                self.proposed_substitute()
+                read_line += 1
+                self.proposed_substitute(0 + read_line)
             else:
                 print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
                 self.save_substitute(name_substitute)

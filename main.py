@@ -22,7 +22,6 @@ class User:
         self.user_answer_category = 0
         self.user_answer_food = 0
         self.i = 0
-        self.dict_food = {}
 
     def first_question(self):
         # first question at the user :
@@ -81,11 +80,12 @@ class User:
         result_food = self.cursor.fetchall()
 
         print("choix 0 > Retourner aux catégories")
+        dict_food = {}
         i = 0
         for id, name_food in result_food:
             i += 1
             print("choix", i, ">", name_food)
-            self.dict_food[i] = id
+            dict_food[i] = id
 
         # the user chooses one food
         self.user_answer_food = input("Votre choix : ")
@@ -93,7 +93,7 @@ class User:
         # if wrong answer
         try:
             if int(self.user_answer_food) <= len(result_food) and int(self.user_answer_food) != 0:
-                self.proposed_substitute(0)
+                self.proposed_substitute(0, dict_food)
             elif int(self.user_answer_food) == 0:
                 self.answer_choice_1_category()
             else:
@@ -103,11 +103,11 @@ class User:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(result_food), ".")
             self.answer_choice_1_food()
 
-    def proposed_substitute(self, line):
+    def proposed_substitute(self, line, dict_food):
         # Detail of the proposed food substitute and choice to save it
         self.cursor.execute("USE Purbeurre;")
         if line == 0:
-            self.user_answer_food = self.dict_food.get(int(self.user_answer_food))
+            self.user_answer_food = dict_food.get(int(self.user_answer_food))
 
         select_substitute = """SELECT (SELECT name_food FROM Food WHERE id = {1}) as name_food_chooses, 
                             (SELECT nutriscore FROM Food WHERE id = {1}) as nutriscore_of_food_chooses, 
@@ -168,10 +168,10 @@ class User:
                 self.proposed_substitute(0 + self.i)
             else:
                 print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
-                self.save_substitute()
+                self.save_substitute(name_substitute)
         except ValueError:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
-            self.save_substitute()
+            self.save_substitute(name_substitute)
 
     def answer_choice_2(self):
         # If the user chooses the option 2 :

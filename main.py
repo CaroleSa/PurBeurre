@@ -21,7 +21,6 @@ class User:
 
         self.user_answer_category = 0
         self.user_answer_food = 0
-        self.user_answer_save_food = 0
         self.user_answer_choice_substitute = 0
         self.name_food_chooses = ""
         self.name_substitute = ""
@@ -153,10 +152,10 @@ class User:
         # Confirmation of registration
         print("\nSouhaitez-vous enregistrer ce substitut ? \nchoix 1 > Oui \nchoix 2 > Non "
               "\nchoix 3 > Je souhaite un autre substitut possible")
-        self.user_answer_save_food = input("Votre choix : ")
+        user_answer_save_food = input("Votre choix : ")
 
         try:
-            if self.user_answer_save_food == "1":
+            if user_answer_save_food == "1":
                  save_favorite_substitute = """INSERT IGNORE INTO Favorite (id_food, id_substitute_chooses)
                                             VALUES({0}, (SELECT id FROM Food WHERE name_food = {1}));"""\
                                             .format(int(self.user_answer_food), "\'"+self.name_substitute+"\'")
@@ -164,10 +163,10 @@ class User:
                  self.data_base.commit()
                  print("\nNous avons bien enregistré le substitut", self.name_substitute+".")
                  self.first_question()
-            elif self.user_answer_save_food == "2":
+            elif user_answer_save_food == "2":
                 print("\nEnregistrement non effectué pour le substitut", self.name_substitute+".")
                 self.first_question()
-            elif self.user_answer_save_food == "3":
+            elif user_answer_save_food == "3":
                 self.i += 1
                 self.proposed_substitute(0 + self.i)
             else:

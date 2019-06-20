@@ -37,7 +37,6 @@ class Database:
             base = file.read()
             self.cursor.execute(base, multi=True)
 
-
     def load_insert_data(self):
         """ Loading data of API Openfoodfacts, convert to json and inserting data into the database """
 
@@ -61,7 +60,7 @@ class Database:
 
             # inserting data into Food table
             for value in element['products']:
-                if element['products'].index(value) < 100:
+                if element['products'].index(value) < 20:
                     try:
                         product_name = "\'"+value['product_name_fr'].replace("'", "")+"\'"
                         nutrition_grade = "\'"+value['nutrition_grade_fr'].replace("'", "")+"\'"
@@ -85,7 +84,7 @@ class Database:
 
 # instantiate the class Database and call creation_database() method
 new_database = Database()
-new_database.creation_database()
+#new_database.creation_database()
 new_database.load_insert_data()
 
 

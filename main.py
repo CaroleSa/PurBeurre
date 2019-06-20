@@ -23,6 +23,7 @@ class User:
         self.user_answer_id_category = 0
         self.user_answer_i_food = 0
         self.dict_equivalence_i_id_food = {}
+        self.dict_equivalence_i_id_food_substitute = {}
 
     def menu(self):
         # first question at the user :
@@ -194,24 +195,42 @@ class User:
         all_food_substitute = self.cursor.fetchall()
 
         if len(all_id_name_substitute) == 0:
-            print("\nVous n'avez pas encore enregistré de substituts")
+            print("\nVous n'avez pas d'aliments substitués enregistrés.")
             self.menu()
         else:
             print("\nVoici vos aliments et substitus enregistrés :\nchoix 0 > quitter mes substituts enregistrés")
+            i = 0
             for id_name_substitute, name_food_substitute in zip(all_id_name_substitute, all_food_substitute):
-                print("choix", id_name_substitute[0], ">", name_food_substitute[0],
+                i += 1
+                print("choix", i, ">", name_food_substitute[0],
                       "(substitué par", id_name_substitute[1]+")")
+                self.dict_equivalence_i_id_food_substitute[i] = id_name_substitute[0]
 
-            user_answer_choice_id_substitute = input("Tapez un choix pour avoir plus de détail sur le substitut "
-                                                     "ou le supprimer : ")
+            try:
 
-            self.detail_substitute(all_food_substitute, user_answer_choice_id_substitute)
+                user_answer_choice_i_substitute = input("Tapez un choix pour avoir plus de détail sur le substitut "
+                                                        "ou le supprimer : ")
+
+                if int(user_answer_choice_i_substitute) <= len(all_food_substitute) \
+                        and int(user_answer_choice_i_substitute) != 0:
+                    user_answer_choice_id_substitute = self.dict_equivalence_i_id_food_substitute.get(
+                    int(user_answer_choice_i_substitute))
+                    self.detail_substitute(all_food_substitute, user_answer_choice_id_substitute)
+
+                elif int(user_answer_choice_i_substitute) == 0:
+                    self.menu()
+                else:
+                    print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(all_food_substitute), ".")
+                    self.show_food_substitute()
+
+            except ValueError:
+                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(all_food_substitute), ".")
+                self.show_food_substitute()
+
 
     def detail_substitute(self, all_food_substitute, user_answer_choice_id_substitute):
         # if wrong answer
-        try:
-            if int(user_answer_choice_id_substitute) <= len(all_food_substitute) \
-                    and int(user_answer_choice_id_substitute) != 0:
+
                 self.cursor.execute("""SELECT name_food, nutriscore, description, store, link
                                     FROM Food 
                                     WHERE id = (SELECT id_substitute_chooses FROM Favorite WHERE id = {});"""
@@ -235,23 +254,16 @@ class User:
                         self.menu()
                     else:
                         print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2")
-                        self.detail_substitute(all_food_substitute, user_answer_choice_id_substitute)
+                        self.detail_substitute(all_food_substitute, user_answer_choice_i_substitute)
 
-            elif int(user_answer_choice_id_substitute) == 0:
-                self.menu()
-            else:
-                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(all_food_substitute), ".")
-                self.show_food_substitute()
-        except ValueError:
-            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et", len(all_food_substitute), ".")
-            self.show_food_substitute()
+
 
     def delete_food_substitute(self, user_answer_choice_id_substitute):
 
         self.cursor.execute("USE Purbeurre;")
         self.cursor.execute("""DELETE FROM Favorite where id = {};""".format(int(user_answer_choice_id_substitute)))
         self.data_base.commit()
-        print("L'aliment a bien été supprimé.")
+        print("\nL'aliment a bien été supprimé.")
         self.show_food_substitute()
 
     def order_letters(self, letter):

@@ -35,7 +35,8 @@ class Database:
         """ Running file "base.sql" requests : for the creation of the database """
         with open("base.sql", "r") as file:
             base = file.read()
-            self.cursor.execute(base)
+            self.cursor.execute(base, multi=True)
+
 
     def load_insert_data(self):
         """ Loading data of API Openfoodfacts, convert to json and inserting data into the database """
@@ -84,6 +85,7 @@ class Database:
 
 # instantiate the class Database and call creation_database() method
 new_database = Database()
-#new_database.creation_database()
+new_database.creation_database()
 new_database.load_insert_data()
+
 

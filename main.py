@@ -166,6 +166,7 @@ class User:
                 print("\nEnregistrement non effectué pour le substitut", self.name_substitute+".")
                 self.first_question()
             elif self.user_answer_save_food == "3":
+                print(self.i)
                 self.i += 1
                 self.proposed_substitute(0 + self.i)
             else:
@@ -248,7 +249,7 @@ new_user = User()
 new_user.first_question()
 
 #voir si on fait une recherche au hazard plutot pour le substitut
-
+#tester suppression liste data dans database
 
 
 

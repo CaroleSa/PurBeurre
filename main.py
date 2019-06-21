@@ -262,7 +262,8 @@ class User:
     def detail_substitute(self, all_substituted_food, user_answer_choice_id_substitute):
         """ display the detail of the substitute """
         # call Database methode : select the detail of the substitute
-        show_substitute = self.new_database.select_detail_substitute(user_answer_choice_id_substitute)
+        show_substitute = self.new_database.select_detail_substitute\
+            (user_answer_choice_id_substitute)
 
         # display the detail of the substitute
         for name_substitute, nutriscore_substitute, description_substitute, store_substitute, \

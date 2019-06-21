@@ -15,12 +15,11 @@ import mysql.connector
 class Database:
     """ Creation database and insert data """
 
-
     def __init__(self):
         """ Connection at MySQL, creation cursor and list of chosen categories """
         # read the file connection.yml
-        with open('connection.yml', 'r') as file:
-            info = file.read().split()
+        file = open('connection.yml', 'r')
+        info = file.read().split()
 
         # connection at MySQL with data of connection.yml file and creation cursor
         self.data_base = mysql.connector.connect(user=info[0], password=info[1], host=info[2])
@@ -32,16 +31,13 @@ class Database:
         # food data of categories chooses
         self.list_data = []
 
-
     def creation_database(self):
         """ Running file "base.sql" requests : for the creation of the database """
         with open("base.sql", "r") as file:
             base = file.read()
             self.cursor.execute(base, multi=True)
 
-
-
-    def load_data(self):
+    def load_insert_data(self):
         """ Loading data of API Openfoodfacts, convert to json
         and inserting data into the database """
 
@@ -56,20 +52,19 @@ class Database:
                                    "&tag_contains_0=contains"
                                    "&tag_0={0}"
                                    "&sort_by=unique_scans_n"
-                                   "&page_size=1000&axis_x=energy"
-                                   "&axis_y=products_n&action=display"
+                                   "&page_size=1000"
+                                   "&axis_x=energy"
+                                   "&axis_y=products_n"
+                                   "&action=display"
                                    "&json=1".format("\'"+elt+"\'"))
             data = json.loads(request.text)
             self.list_data.append(data)
-            self.insert_data()
-
-
-    def insert_data(self):
 
         for elt, element in zip(self.categories, self.list_data):
+
             # inserting data into Category table
             insert_data_categories = ("""INSERT IGNORE INTO Category (categories) VALUES({0});"""
-                                        .format("\'"+elt+"\'"))
+                                      .format("\'"+elt+"\'"))
             self.cursor.execute(insert_data_categories)
             self.data_base.commit()
 
@@ -92,7 +87,6 @@ class Database:
                                                     ingredients, store_tags, url))
                         self.cursor.execute(insert_data_food)
                         self.data_base.commit()
-                        print(insert_data_food)
 
                     # if errors
                     except KeyError:
@@ -102,4 +96,4 @@ class Database:
 # instantiate the class Database and call creation_database() method
 NEW_DATABASE = Database()
 #NEW_DATABASE.creation_database()
-NEW_DATABASE.load_data()
+NEW_DATABASE.load_insert_data()

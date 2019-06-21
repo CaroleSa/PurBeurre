@@ -35,7 +35,7 @@ class Database:
         """ Running file "base.sql" requests : for the creation of the database """
         with open("base.sql", "r") as file:
             base = file.read()
-            self.cursor.execute(base, multi=True)
+            self.cursor.execute(base)
 
     def load_insert_data(self):
         """ Loading data of API Openfoodfacts, convert to json
@@ -46,25 +46,17 @@ class Database:
 
         # creating the list that contains food data of categories chooses
         for elt in self.categories:
-            request = requests.get("https://fr.openfoodfacts.org/cgi/search.pl"
-                                   "?action=process"
-                                   "&tagtype_0=categories"
-                                   "&tag_contains_0=contains"
-                                   "&tag_0={0}"
-                                   "&sort_by=unique_scans_n"
-                                   "&page_size=1000"
-                                   "&axis_x=energy"
-                                   "&axis_y=products_n"
-                                   "&action=display"
-                                   "&json=1".format("\'"+elt+"\'"))
+            request = requests.get("https://fr.openfoodfacts.org/cgi/search.pl?action=process&tagtype_0=categories&tag_contains_0=contains&tag_0={0}&sort_by=unique_scans_n&page_size=1000&axis_x=energy&axis_y=products_n&action=display&json=1".format("\'"+elt+"\'"))
             data = json.loads(request.text)
             self.list_data.append(data)
+            print(self.list_data)
 
         for elt, element in zip(self.categories, self.list_data):
 
             # inserting data into Category table
             insert_data_categories = ("""INSERT IGNORE INTO Category (categories) VALUES({0});"""
                                       .format("\'"+elt+"\'"))
+            print(insert_data_categories)
             self.cursor.execute(insert_data_categories)
             self.data_base.commit()
 
@@ -173,4 +165,4 @@ class Database:
 # instantiate the class Database and call creation_database() method
 NEW_DATABASE = Database()
 #NEW_DATABASE.creation_database()
-#NEW_DATABASE.load_insert_data()
+NEW_DATABASE.load_insert_data()

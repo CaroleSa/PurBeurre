@@ -19,8 +19,8 @@ class Database:
     def __init__(self):
         """ Connection at MySQL, creation cursor and list of chosen categories """
         # read the file connection.yml
-        file = open('connection.yml', 'r')
-        info = file.read().split()
+        with open('connection.yml', 'r') as file:
+            info = file.read().split()
 
         # connection at MySQL with data of connection.yml file and creation cursor
         self.data_base = mysql.connector.connect(user=info[0], password=info[1], host=info[2])
@@ -40,7 +40,8 @@ class Database:
             self.cursor.execute(base, multi=True)
 
 
-    def load_insert_data(self):
+
+    def load_data(self):
         """ Loading data of API Openfoodfacts, convert to json
         and inserting data into the database """
 
@@ -60,12 +61,15 @@ class Database:
                                    "&json=1".format("\'"+elt+"\'"))
             data = json.loads(request.text)
             self.list_data.append(data)
+            self.insert_data()
+
+
+    def insert_data(self):
 
         for elt, element in zip(self.categories, self.list_data):
-
             # inserting data into Category table
             insert_data_categories = ("""INSERT IGNORE INTO Category (categories) VALUES({0});"""
-                                      .format("\'"+elt+"\'"))
+                                        .format("\'"+elt+"\'"))
             self.cursor.execute(insert_data_categories)
             self.data_base.commit()
 
@@ -88,6 +92,7 @@ class Database:
                                                     ingredients, store_tags, url))
                         self.cursor.execute(insert_data_food)
                         self.data_base.commit()
+                        print(insert_data_food)
 
                     # if errors
                     except KeyError:
@@ -97,4 +102,4 @@ class Database:
 # instantiate the class Database and call creation_database() method
 NEW_DATABASE = Database()
 #NEW_DATABASE.creation_database()
-NEW_DATABASE.load_insert_data()
+NEW_DATABASE.load_data()

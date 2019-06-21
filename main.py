@@ -15,10 +15,9 @@ class User:
 
 
     def __init__(self):
-        # instantiate the class Database, use data_base attribute and creation cursor
-        new_database = db.Database()
-        self.data_base = new_database.data_base
-        self.cursor = self.data_base.cursor()
+        # instantiate the class Database, use data_base attribute
+        self.new_database = db.Database()
+        self.data_base = self.new_database.data_base
 
         # attributes
         self.user_answer_id_category = 0
@@ -52,10 +51,8 @@ class User:
 
     def propose_categories(self):
         """ choice of category """
-        # use database for selected categories
-        self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("SELECT id, categories FROM Category ORDER BY id;")
-        all_id_name_categories = self.cursor.fetchall()
+        # call Database method : use database for selected categories
+        all_id_name_categories = self.new_database.select_categories_database()
 
         # display the categories
         print("\nRenseignez le numéro de la catégorie choisie :")
@@ -85,12 +82,8 @@ class User:
 
     def propose_foods(self):
         """ choice of food """
-        # use database for selected foods
-        self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("""SELECT id, name_food
-                            FROM Food
-                            WHERE category_id = {};""".format(self.user_answer_id_category))
-        all_id_name_food = self.cursor.fetchall()
+        # call Database method : use database for selected foods
+        all_id_name_food = self.new_database.select_foods_database(self.user_answer_id_category)
 
         # display the foods
         print("\nRenseignez le numéro de l'aliment choisi :")
@@ -123,19 +116,12 @@ class User:
 
     def propose_substitute(self, read_line_substitute):
         """ detail of the substitute and choice to save it """
-        # use database for selected the substitute and the substituted food
+        # id recovery from i (choice number)
         user_answer_id_food = self.dict_equivalence_i_id_food.get(int(self.user_answer_i_food))
-        self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("""SELECT (SELECT name_food FROM Food WHERE id = {1}),
-                            (SELECT nutriscore FROM Food WHERE id = {1}), 
-                            name_food, nutriscore, description, store, link
-                            FROM Food
-                            WHERE category_id = {0}
-                            ORDER BY nutriscore LIMIT {2},1;"""\
-                            .format(self.user_answer_id_category,
-                                    user_answer_id_food,
-                                    read_line_substitute))
-        result_food_chooses_and_substitute = self.cursor.fetchall()
+
+        # call Database method : select the substitute and the substituted food
+        result_food_chooses_and_substitute = self.new_database.select_substitute\
+            (self.user_answer_id_category, user_answer_id_food, read_line_substitute)
 
         # 'for loop' for use data of the database
         for name_food_chooses, nutriscore_of_food_chooses, name_substitute, \
@@ -199,16 +185,9 @@ class User:
         # user's answer
         user_answer_save_food = input("Votre choix : ")
         try:
-            # save substituted food and his substitute into database
+            # use Database method for save substituted food and his substitute into database
             if user_answer_save_food == "1":
-                save_favorite_substituted_food = """INSERT IGNORE INTO Favorite
-                                                 (id_food, id_substitute_chooses)
-                                                 VALUES({0}, 
-                                                 (SELECT id FROM Food WHERE name_food = {1}));"""\
-                                                 .format(int(user_answer_id_food),
-                                                         "\'"+name_substitute+"\'")
-                self.cursor.execute(save_favorite_substituted_food)
-                self.data_base.commit()
+                self.new_database.insert_favorite_food(user_answer_id_food, name_substitute)
                 print("\nNous avons bien enregistré l'aliment "
                       "et son substitut", name_substitute+".")
                 self.menu()
@@ -236,27 +215,16 @@ class User:
 
     def show_food_and_substitute(self):
         """ show the favorit foods """
-        # use database for selected the favorit foods
-        self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("""SELECT Favorite.id, Food.name_food
-                            FROM Food 
-                            JOIN Favorite ON Food.id = Favorite.id_substitute_chooses 
-                            WHERE Food.id = Favorite.id_substitute_chooses
-                            ORDER BY Favorite.id;""")
-        all_id_name_substitute = self.cursor.fetchall()
-        self.cursor.execute("""SELECT Food.name_food
-                            FROM Food
-                            JOIN Favorite ON Food.id = Favorite.id_food
-                            WHERE Food.id = Favorite.id_food
-                            ORDER BY Favorite.id;""")
-        all_substituted_food = self.cursor.fetchall()
+        # call Database method : select the favorite foods and their substitutes
+        all_id_name_substitute = self.new_database.select_favorite_foods()[0]
+        all_substituted_food = self.new_database.select_favorite_foods()[1]
 
-        # if not exist favorit foods
+        # if not exist favorite foods
         if not all_id_name_substitute:
             print("\nVous n'avez pas d'aliments substitués enregistrés.")
             self.menu()
 
-        # display favorit foods
+        # display favorite foods
         else:
             print("\nVoici vos aliments et substitus enregistrés :"
                   "\nchoix 0 > quitter mes substituts enregistrés")
@@ -293,13 +261,8 @@ class User:
 
     def detail_substitute(self, all_substituted_food, user_answer_choice_id_substitute):
         """ display the detail of the substitute """
-        # use database for selected the detail of the substitute
-        self.cursor.execute("""SELECT name_food, nutriscore, description, store, link
-                            FROM Food 
-                            WHERE id = 
-                            (SELECT id_substitute_chooses FROM Favorite WHERE id = {});"""
-                            .format(int(user_answer_choice_id_substitute)))
-        show_substitute = self.cursor.fetchall()
+        # call Database methode : select the detail of the substitute
+        show_substitute = self.new_database.select_detail_substitute(user_answer_choice_id_substitute)
 
         # display the detail of the substitute
         for name_substitute, nutriscore_substitute, description_substitute, store_substitute, \
@@ -331,11 +294,8 @@ class User:
 
     def delete_food_substitute(self, user_answer_choice_id_substitute):
         """ deleted the favorit food and his substitute """
-        # request at the database to delete favorit food
-        self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("""DELETE FROM Favorite where id = {};"""
-                            .format(int(user_answer_choice_id_substitute)))
-        self.data_base.commit()
+        # call Database method : delete favorite food
+        self.new_database.delete_favorite_food(user_answer_choice_id_substitute)
 
         # confirmation of deletion and return to favorit foods
         print("\nL'aliment a bien été supprimé.")

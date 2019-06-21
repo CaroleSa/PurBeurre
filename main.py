@@ -36,7 +36,7 @@ class User:
         if str(user_answer_choice_menu) == "1":
             self.propose_categories()
         elif str(user_answer_choice_menu) == "2":
-            self.show_food_substitute()
+            self.show_food_and_substitute()
         elif str(user_answer_choice_menu) == "3":
             print("\nMerci pour votre visite et à bientôt !")
 
@@ -227,7 +227,7 @@ class User:
                 print("choix", i, ">", name_substituted_food[0],
                       "(substitué par", id_name_substitute[1]+")")
                 self.dict_equivalence_i_id_food_substitute[i] = id_name_substitute[0]
-            print("Tapez un choix pour avoir plus de détail sur le substitut ou le supprimer :")
+            print("Tapez un choix pour avoir plus de détail sur le substitut ou le supprimer.")
 
             # user's answer
             try:

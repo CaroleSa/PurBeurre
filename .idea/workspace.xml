@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="586d9859-44f6-4702-a111-4b5985b0ce0f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,19 +16,19 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="198" column="39" selection-start-line="198" selection-start-column="39" selection-end-line="198" selection-end-column="39" />
+            <state relative-caret-position="323">
+              <caret line="176" lean-forward="true" selection-start-line="176" selection-end-line="176" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/database.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1082">
+              <caret line="100" lean-forward="true" selection-start-line="100" selection-end-line="100" />
               <folding>
-                <element signature="e#181#589#0" />
-                <element signature="e#619#1413#0" />
-                <element signature="e#1457#2819#0" />
-                <element signature="e#2888#4253#0" />
-                <element signature="e#4276#6042#0" />
-                <element signature="e#6275#6884#0" />
-                <element signature="e#7065#8676#0" />
-                <element signature="e#9037#11808#0" />
-                <element signature="e#11926#13626#0" />
-                <element signature="e#13065#13337#0" />
+                <element signature="e#84#95#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -41,6 +42,11 @@
         <option value="Python Script" />
       </list>
     </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>order letter</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -240,7 +246,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.23418574" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.44414535" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39703903" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -330,30 +336,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/database.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="62" column="56" selection-start-line="62" selection-start-column="56" selection-end-line="62" selection-end-column="56" />
+        <state relative-caret-position="1082">
+          <caret line="100" lean-forward="true" selection-start-line="100" selection-end-line="100" />
           <folding>
-            <element signature="e#84#106#0" expanded="true" />
+            <element signature="e#84#95#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="198" column="39" selection-start-line="198" selection-start-column="39" selection-end-line="198" selection-end-column="39" />
-          <folding>
-            <element signature="e#181#589#0" />
-            <element signature="e#619#1413#0" />
-            <element signature="e#1457#2819#0" />
-            <element signature="e#2888#4253#0" />
-            <element signature="e#4276#6042#0" />
-            <element signature="e#6275#6884#0" />
-            <element signature="e#7065#8676#0" />
-            <element signature="e#9037#11808#0" />
-            <element signature="e#11926#13626#0" />
-            <element signature="e#13065#13337#0" />
-          </folding>
+        <state relative-caret-position="323">
+          <caret line="176" lean-forward="true" selection-start-line="176" selection-end-line="176" />
         </state>
       </provider>
     </entry>

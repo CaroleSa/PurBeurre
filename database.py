@@ -19,10 +19,11 @@ class Database:
         """ Connection at MySQL, creation cursor and list of chosen categories """
         # read the file connection.yml
         file = open('connection.yml', 'r')
-        info = file.read().split()
+        self.info = file.read().split()
 
         # connection at MySQL with data of connection.yml file and creation cursor
-        self.data_base = mysql.connector.connect(user=info[0], password=info[1], host=info[2])
+        self.data_base = mysql.connector.connect(user=self.info[0], password=self.info[1],
+                                                 host=self.info[2])
         self.cursor = self.data_base.cursor()
 
         # food categories (list) used in the program
@@ -37,9 +38,15 @@ class Database:
             base = file.read()
             self.cursor.execute(base)
 
+        # call Database method to insert data
+        self.load_insert_data()
+
     def load_insert_data(self):
         """ Loading data of API Openfoodfacts, convert to json
         and inserting data into the database """
+        self.data_base = mysql.connector.connect(user=self.info[0], password=self.info[1],
+                                                 host=self.info[2])
+        self.cursor = self.data_base.cursor()
 
         # executed "use Purbeurre" request
         self.cursor.execute("USE Purbeurre;")
@@ -81,6 +88,7 @@ class Database:
                                                     ingredients, store_tags, url))
                         self.cursor.execute(insert_data_food)
                         self.data_base.commit()
+                        print("insert ok")
 
                     # if errors
                     except KeyError:
@@ -163,9 +171,6 @@ class Database:
         self.data_base.commit()
 
 
-
 # instantiate the class Database and call creation_database() method
 NEW_DATABASE = Database()
-#NEW_DATABASE.creation_database()
-NEW_DATABASE.load_insert_data()
-
+NEW_DATABASE.creation_database()

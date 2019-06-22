@@ -166,5 +166,6 @@ class Database:
 
 # instantiate the class Database and call creation_database() method
 NEW_DATABASE = Database()
-NEW_DATABASE.creation_database()
+#NEW_DATABASE.creation_database()
 NEW_DATABASE.load_insert_data()
+

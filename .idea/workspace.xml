@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="586d9859-44f6-4702-a111-4b5985b0ce0f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,8 +16,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="264" column="69" lean-forward="true" selection-start-line="264" selection-start-column="69" selection-end-line="264" selection-end-column="69" />
+            <state relative-caret-position="4488">
+              <caret line="264" column="69" selection-start-line="264" selection-start-column="69" selection-end-line="264" selection-end-column="69" />
             </state>
           </provider>
         </entry>
@@ -24,8 +25,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/database.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="244">
-              <caret line="38" lean-forward="true" selection-start-line="38" selection-end-line="38" />
+            <state relative-caret-position="397">
+              <caret line="170" lean-forward="true" selection-start-line="170" selection-end-line="170" />
               <folding>
                 <element signature="e#84#95#0" expanded="true" />
               </folding>
@@ -75,23 +76,23 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope">
-        <subPane subId="Scope 'Changed Files'; set:Changed Files; ALL; class com.intellij.packageDependencies.ChangeListScope">
-          <expand>
-            <path>
-              <item name="PurBeurre" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="C:\Users\Carole\program_python\Program\PurBeurre" type="442cc68d:ScopeViewTreeModel$RootNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="PurBeurre" type="b2602c69:ProjectViewProjectNode" />
               <item name="PurBeurre" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope">
+        <subPane subId="Scope 'Changed Files'; set:Changed Files; ALL; class com.intellij.packageDependencies.ChangeListScope">
+          <expand>
+            <path>
+              <item name="PurBeurre" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="C:\Users\Carole\program_python\Program\PurBeurre" type="442cc68d:ScopeViewTreeModel$RootNode" />
             </path>
           </expand>
           <select />
@@ -335,13 +336,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/base.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="2" lean-forward="true" selection-start-line="12" selection-start-column="2" selection-end-line="12" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/env/Lib/_bootlocale.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -370,13 +364,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="264" column="69" lean-forward="true" selection-start-line="264" selection-start-column="69" selection-end-line="264" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/connection.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -384,10 +371,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4488">
+          <caret line="264" column="69" selection-start-line="264" selection-start-column="69" selection-end-line="264" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/base.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="2" lean-forward="true" selection-start-line="12" selection-start-column="2" selection-end-line="12" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/database.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="38" lean-forward="true" selection-start-line="38" selection-end-line="38" />
+        <state relative-caret-position="397">
+          <caret line="170" lean-forward="true" selection-start-line="170" selection-end-line="170" />
           <folding>
             <element signature="e#84#95#0" expanded="true" />
           </folding>

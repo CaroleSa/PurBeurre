@@ -88,7 +88,6 @@ class Database:
                                                     ingredients, store_tags, url))
                         self.cursor.execute(insert_data_food)
                         self.data_base.commit()
-                        print("insert ok")
 
                     # if errors
                     except KeyError:

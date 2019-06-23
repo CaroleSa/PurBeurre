@@ -15,9 +15,8 @@ class User:
 
 
     def __init__(self):
-        # instantiate the class Database, use data_base attribute
+        # instantiate the class Database
         self.new_database = db.Database()
-        self.data_base = self.new_database.data_base
 
         # attributes
         self.user_answer_id_category = 0

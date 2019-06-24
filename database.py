@@ -71,7 +71,7 @@ class Database:
 
             # inserting data into Food table
             for value in element['products']:
-                if element['products'].index(value) < 20:
+                if element['products'].index(value) < 100:
                     try:
                         product_name = "\'"+value['product_name_fr'].replace("'", "")+"\'"
                         nutrition_grade = "\'"+value['nutrition_grade_fr'].replace("'", "")+"\'"
@@ -126,7 +126,7 @@ class Database:
 
     def insert_favorite_food(self, user_answer_id_food, name_substitute):
         """ use database to save substituted food and his substitute """
-        save_favorite_substituted_food = """INSERT IGNORE INTO Favorite
+        save_favorite_substituted_food = """INSERT INTO Favorite
                                         (id_food, id_substitute_chooses)
                                         VALUES({0}, 
                                         (SELECT id FROM Food WHERE name_food = {1}));""" \

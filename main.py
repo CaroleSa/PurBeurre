@@ -211,6 +211,9 @@ class User:
             self.save_substituted_food(name_substitute, read_line_substitute,
                                        user_answer_id_food)
 
+        except:
+            print("\nCet aliment et son substitut sont déjà enregistrés.")
+            self.show_food_and_substitute()
 
     def show_food_and_substitute(self):
         """ show the favorit foods """
@@ -225,8 +228,8 @@ class User:
 
         # display favorite foods
         else:
-            print("\nVoici vos aliments et substitus enregistrés :"
-                  "\nchoix 0 > quitter mes substituts enregistrés")
+            print("\nVoici vos aliments et substituts enregistrés :"
+                  "\nchoix 0 > quitter mes aliments et substituts enregistrés")
             i = 0
             for id_name_substitute, name_substituted_food \
                     in zip(all_id_name_substitute, all_substituted_food):
@@ -297,7 +300,7 @@ class User:
         # call Database method : delete favorite food
         self.new_database.delete_favorite_food(user_answer_choice_id_substitute)
 
-        # confirmation of deletion and return to favorit foods
+        # confirmation of deletion and return to favorite foods
         print("\nL'aliment a bien été supprimé.")
         self.show_food_and_substitute()
 

@@ -10,18 +10,20 @@ nutriscore VARCHAR(1) NOT NULL,
 description VARCHAR(1000),
 store VARCHAR(100),
 link VARCHAR(300)
-);
+)
+ENGINE = InnoDB;
 
 CREATE TABLE Favorite(
 id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 id_food INT UNSIGNED NOT NULL,
-id_substitute_chooses INT UNSIGNED NOT NULL
+id_substitute_chooses INT UNSIGNED NOT NULL,
+UNIQUE unique_id_food_id_substitute_chooses (id_food, id_substitute_chooses)
 )
 ENGINE = InnoDB;
 
 CREATE TABLE Category(
 id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
-categories VARCHAR(50) UNIQUE
+categories VARCHAR(50) NOT NULL UNIQUE
 );
 
 ALTER TABLE Food

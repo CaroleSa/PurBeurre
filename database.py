@@ -5,7 +5,7 @@
 
 
 
-# import library
+# import module and library
 import json
 import requests
 import mysql.connector

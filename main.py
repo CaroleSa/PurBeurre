@@ -5,9 +5,12 @@
 
 
 
-# import file
+# import
+from mysql.connector.errors import IntegrityError
+
 import database as db
 # pylint: disable=too-many-function-args
+
 
 
 class User:
@@ -211,12 +214,12 @@ class User:
             self.save_substituted_food(name_substitute, read_line_substitute,
                                        user_answer_id_food)
 
-        except:
+        except IntegrityError:
             print("\nCet aliment et son substitut sont déjà enregistrés.")
             self.show_food_and_substitute()
 
     def show_food_and_substitute(self):
-        """ show the favorit foods """
+        """ show the favorite foods """
         # call Database method : select the favorite foods and their substitutes
         all_id_name_substitute = self.new_database.select_favorite_foods()[0]
         all_substituted_food = self.new_database.select_favorite_foods()[1]
@@ -296,7 +299,7 @@ class User:
 
 
     def delete_food_substitute(self, user_answer_choice_id_substitute):
-        """ deleted the favorit food and his substitute """
+        """ deleted the favorite food and his substitute """
         # call Database method : delete favorite food
         self.new_database.delete_favorite_food(user_answer_choice_id_substitute)
 

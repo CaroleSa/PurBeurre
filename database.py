@@ -5,7 +5,7 @@
 
 
 
-# import module and library
+# import
 import json
 import requests
 import mysql.connector
@@ -18,8 +18,8 @@ class Database:
     def __init__(self):
         """ Connection at MySQL, creation cursor and list of chosen categories """
         # read the file connection.yml
-        file = open('connection.yml', 'r')
-        self.info = file.read().split()
+        with open('connection.yml', 'r') as file:
+            self.info = file.read().split()
 
         # connection at MySQL with data of connection.yml file and creation cursor
         self.data_base = mysql.connector.connect(user=self.info[0], password=self.info[1],

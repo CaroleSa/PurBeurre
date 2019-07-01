@@ -25,7 +25,7 @@ Sur le terminal, lors du lancement du programme,
 l'utilisateur se voit proposer 3 choix : 
 - choix 1 > quels aliments souhaitez-vous remplacer ?
 - choix 2 > retrouver mes aliments substitués
-- choix 3 > quitter 
+- choix 3 > quitter. 
 
 Si l'utilisateur tape "1", une liste de catégories lui est proposée.
 Suite au choix d'une catégorie, s'affiche la liste des aliments.
@@ -45,4 +45,3 @@ de son substitut ainsi que 3 choix possibles :
 Si l'utilisateur tape "3", il met fin au programme.
 
 À tout moment, l'utilisateur à la possibilité de retourner aux étapes précédentes.
-

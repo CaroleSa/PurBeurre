@@ -5,7 +5,7 @@
 
 
 
-# import
+# imports
 import json
 import requests
 import mysql.connector
@@ -16,7 +16,7 @@ class Database:
     """ Creation database and insert data """
 
     def __init__(self):
-        """ Connection at MySQL, creation cursor and list of chosen categories """
+        """ Connection at MySQL, creation cursor and list of categories """
         # read the file connection.yml
         with open('connection.yml', 'r') as file:
             self.info = file.read().split()
@@ -42,7 +42,7 @@ class Database:
         self.load_insert_data()
 
     def load_insert_data(self):
-        """ Loading data of API Openfoodfacts, convert to json
+        """ Loading data of the A.P.I. Open Food Facts, convert to json
         and inserting data into the database """
         self.data_base = mysql.connector.connect(user=self.info[0], password=self.info[1],
                                                  host=self.info[2])

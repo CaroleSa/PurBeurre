@@ -5,7 +5,7 @@
 
 
 
-# import
+# imports
 from mysql.connector.errors import IntegrityError
 
 import database as db
@@ -154,7 +154,7 @@ class User:
 
 
     def no_substitute(self, name_food_chooses):
-        """ the food chooses does not have a substitute,
+        """ the food chosen does not have a substitute,
         propose a new search or return to the menu """
         # new choices
         print("\nL'aliment", name_food_chooses,
@@ -204,7 +204,7 @@ class User:
                 read_line_substitute += 1
                 self.propose_substitute(0 + read_line_substitute)
 
-            # if the answer does not exist
+            # if the answer does not exist or if the food is already registered
             else:
                 print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
                 self.save_substituted_food(name_substitute, read_line_substitute,
@@ -213,7 +213,6 @@ class User:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
             self.save_substituted_food(name_substitute, read_line_substitute,
                                        user_answer_id_food)
-
         except IntegrityError:
             print("\nCet aliment et son substitut sont déjà enregistrés.")
             self.show_food_and_substitute()
@@ -266,7 +265,7 @@ class User:
 
     def detail_substitute(self, all_substituted_food, user_answer_choice_id_substitute):
         """ display the detail of the substitute """
-        # call Database methode : select the detail of the substitute
+        # call Database method : select the detail of the substitute
         show_substitute = self.new_database.select_detail_substitute\
             (user_answer_choice_id_substitute)
 
@@ -309,7 +308,7 @@ class User:
 
 
 
-# instantiate the class User and call User() method
+# instantiate the class User and call menu() method
 NEW_USER = User()
 NEW_USER.menu()
 

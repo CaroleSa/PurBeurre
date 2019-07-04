@@ -217,6 +217,7 @@ class User:
             print("\nCet aliment et son substitut sont déjà enregistrés.")
             self.show_food_and_substitute()
 
+
     def show_food_and_substitute(self):
         """ show the favorite foods """
         # call Database method : select the favorite foods and their substitutes

@@ -7,7 +7,7 @@
 
 # imports
 import mysql.connector
-import call_api
+import call_api as ca
 
 
 
@@ -50,7 +50,7 @@ class Database:
         if len(data_table_food) == 0:
 
             # instantiate the class Call_api
-            NEW_CALL_API = call_api.Call_api()
+            NEW_CALL_API = ca.Call_api()
             NEW_CALL_API.load_data()
             categories = NEW_CALL_API.categories
             list_data = NEW_CALL_API.list_data
@@ -90,7 +90,9 @@ class Database:
     def select_categories_database(self):
         """ use database to selected categories """
         self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("SELECT id, categories FROM Category ORDER BY id;")
+        self.cursor.execute("""SELECT id, categories 
+                            FROM Category 
+                            ORDER BY id;""")
         all_id_name_categories = self.cursor.fetchall()
         return all_id_name_categories
 

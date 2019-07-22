@@ -37,6 +37,3 @@ ADD CONSTRAINT fk_favorite_id_food FOREIGN KEY (id_food) REFERENCES Food (id);
 
 ALTER TABLE Favorite
 ADD CONSTRAINT fk_favorite_substitute_chooses FOREIGN KEY (id_substitute_chooses) REFERENCES Food (id);
-
-PREPARE select_categories
-FROM 'SELECT id, categories FROM Category ORDER BY id';

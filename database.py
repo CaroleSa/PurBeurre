@@ -25,10 +25,7 @@ class Database:
                                                  host=self.info[2])
         self.cursor = self.data_base.cursor()
 
-        # instantiate the class Api
-        new_api = call_api.Call_api()
-        self.categories = new_api.categories
-        self.list_data = new_api.list_data
+
 
     def creation_database(self):
         """ Running file "base.sql" requests : for the creation of the database """
@@ -49,42 +46,54 @@ class Database:
         # executed "use Purbeurre" request
         self.cursor.execute("USE Purbeurre;")
 
-        for elt, element in zip(self.categories, self.list_data):
+        # no insertion if the table Food already contains data
+        self.cursor.execute("SELECT * FROM Food;")
+        data_table_food = self.cursor.fetchall()
 
-            # inserting data into Category table
-            insert_data_categories = ("""INSERT IGNORE INTO Category (categories) VALUES({0});"""
+        if len(data_table_food) == 0:
+
+            # instantiate the class Api
+            NEW_CALL_API = call_api.Call_api()
+            NEW_CALL_API.load_data()
+            categories = NEW_CALL_API.categories
+            list_data = NEW_CALL_API.list_data
+
+            for elt, element in zip(categories, list_data):
+
+                # inserting data into Category table
+                insert_data_categories = ("""INSERT IGNORE INTO Category (categories) VALUES({0});"""
                                       .format("\'"+elt+"\'"))
-            self.cursor.execute(insert_data_categories)
-            self.data_base.commit()
+                self.cursor.execute(insert_data_categories)
+                self.data_base.commit()
 
-            # inserting data into Food table
-            for value in element['products']:
-                if element['products'].index(value) < 100:
-                    try:
-                        product_name = "\'"+value['product_name_fr'].replace("'", "")+"\'"
-                        nutrition_grade = "\'"+value['nutrition_grade_fr'].replace("'", "")+"\'"
-                        ingredients = "\'"+value['ingredients_text'].replace("'", "")+"\'"
-                        store_tags = "\'"+", ".join(value['stores_tags']).replace("'", "")+"\'"
-                        url = "\'"+value['url'].replace("'", "")+"\'"
+                # inserting data into Food table
+                for value in element['products']:
+                    if element['products'].index(value) < 100:
+                        try:
+                            product_name = "\'"+value['product_name_fr'].replace("'", "")+"\'"
+                            nutrition_grade = "\'"+value['nutrition_grade_fr'].replace("'", "")+"\'"
+                            ingredients = "\'"+value['ingredients_text'].replace("'", "")+"\'"
+                            store_tags = "\'"+", ".join(value['stores_tags']).replace("'", "")+"\'"
+                            url = "\'"+value['url'].replace("'", "")+"\'"
 
-                        insert_data_food = ("""INSERT IGNORE INTO Food (name_food, category_id,
-                                            nutriscore, description, store, link) 
-                                            VALUES({0}, 
-                                            (SELECT id FROM Category WHERE categories = {1}),
-                                            {2}, {3}, {4}, {5});"""
-                                            .format(product_name, "\'"+elt+"\'", nutrition_grade,
-                                                    ingredients, store_tags, url))
-                        self.cursor.execute(insert_data_food)
-                        self.data_base.commit()
+                            insert_data_food = ("""INSERT IGNORE INTO Food (name_food, category_id,
+                                                nutriscore, description, store, link) 
+                                                VALUES({0}, 
+                                                (SELECT id FROM Category WHERE categories = {1}),
+                                                {2}, {3}, {4}, {5});"""
+                                                .format(product_name, "\'"+elt+"\'", nutrition_grade,
+                                                        ingredients, store_tags, url))
+                            self.cursor.execute(insert_data_food)
+                            self.data_base.commit()
 
-                    # if errors
-                    except KeyError:
-                        continue
+                        # if errors
+                        except KeyError:
+                            continue
 
     def select_categories_database(self):
         """ use database to selected categories """
         self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("EXECUTE select_categories;")
+        self.cursor.execute("SELECT id, categories FROM Category ORDER BY id;")
         all_id_name_categories = self.cursor.fetchall()
         return all_id_name_categories
 
@@ -158,6 +167,6 @@ class Database:
         self.data_base.commit()
 
 
-# instantiate the class Database and call creation_database() method
+# instantiate the class Database and Call_api
 NEW_DATABASE = Database()
 NEW_DATABASE.creation_database()

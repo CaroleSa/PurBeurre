@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # coding: UTF-8
 
-""" Class User """
+""" Class User_interface """
 
 
 
@@ -13,7 +13,7 @@ import database as db
 
 
 
-class User:
+class User_interface:
     """ Command line interface"""
 
 
@@ -310,7 +310,7 @@ class User:
 
 
 # instantiate the class User and call menu() method
-NEW_USER = User()
+NEW_USER = User_interface()
 NEW_USER.menu()
 
 def main():

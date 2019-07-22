@@ -36,51 +36,6 @@ class Database:
             base = file.read()
             self.cursor.execute(base)
 
-        # call Database method to insert data
-        self.insert_data()
-
-    def insert_data(self):
-        """ Loading data of the A.P.I. Open Food Facts, convert to json
-        and inserting data into the database """
-        self.data_base = mysql.connector.connect(user=self.info[0], password=self.info[1],
-                                                 host=self.info[2])
-        self.cursor = self.data_base.cursor()
-
-        # executed "use Purbeurre" request
-        self.cursor.execute("USE Purbeurre;")
-
-        for elt, element in zip(self.categories, self.list_data):
-
-            # inserting data into Category table
-            insert_data_categories = ("""INSERT IGNORE INTO Category (categories) VALUES({0});"""
-                                      .format("\'"+elt+"\'"))
-            self.cursor.execute(insert_data_categories)
-            self.data_base.commit()
-
-            # inserting data into Food table
-            for value in element['products']:
-                if element['products'].index(value) < 100:
-                    try:
-                        product_name = "\'"+value['product_name_fr'].replace("'", "")+"\'"
-                        nutrition_grade = "\'"+value['nutrition_grade_fr'].replace("'", "")+"\'"
-                        ingredients = "\'"+value['ingredients_text'].replace("'", "")+"\'"
-                        store_tags = "\'"+", ".join(value['stores_tags']).replace("'", "")+"\'"
-                        url = "\'"+value['url'].replace("'", "")+"\'"
-
-                        insert_data_food = ("""INSERT IGNORE INTO Food (name_food, category_id,
-                                            nutriscore, description, store, link) 
-                                            VALUES({0}, 
-                                            (SELECT id FROM Category WHERE categories = {1}),
-                                            {2}, {3}, {4}, {5});"""
-                                            .format(product_name, "\'"+elt+"\'", nutrition_grade,
-                                                    ingredients, store_tags, url))
-                        self.cursor.execute(insert_data_food)
-                        self.data_base.commit()
-
-                    # if errors
-                    except KeyError:
-                        continue
-
     def select_categories_database(self):
         """ use database to selected categories """
         self.cursor.execute("USE Purbeurre;")

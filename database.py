@@ -6,9 +6,8 @@
 
 
 # imports
-import json
-import requests
 import mysql.connector
+import api
 
 
 
@@ -26,11 +25,10 @@ class Database:
                                                  host=self.info[2])
         self.cursor = self.data_base.cursor()
 
-        # food categories (list) used in the program
-        self.categories = ['pizza', 'pate a tartiner', 'gateau', 'yaourt', 'bonbon']
-
-        # food data of categories chooses
-        self.list_data = []
+        # instantiate the class Api
+        new_api = api.Api()
+        self.categories = new_api.categories
+        self.list_data = new_api.list_data
 
     def creation_database(self):
         """ Running file "base.sql" requests : for the creation of the database """
@@ -39,9 +37,9 @@ class Database:
             self.cursor.execute(base)
 
         # call Database method to insert data
-        self.load_insert_data()
+        self.insert_data()
 
-    def load_insert_data(self):
+    def insert_data(self):
         """ Loading data of the A.P.I. Open Food Facts, convert to json
         and inserting data into the database """
         self.data_base = mysql.connector.connect(user=self.info[0], password=self.info[1],
@@ -50,16 +48,6 @@ class Database:
 
         # executed "use Purbeurre" request
         self.cursor.execute("USE Purbeurre;")
-
-        # creating the list that contains food data of categories chooses
-        for elt in self.categories:
-            request = requests.get("https://fr.openfoodfacts.org/cgi/search.pl?action=process"
-                                   "&tagtype_0=categories&tag_contains_0=contains&tag_0={0}"
-                                   "&sort_by=unique_scans_n&page_size=1000"
-                                   "&axis_x=energy&axis_y=products_n&action=display&json=1"
-                                   .format("\'"+elt+"\'"))
-            data = json.loads(request.text)
-            self.list_data.append(data)
 
         for elt, element in zip(self.categories, self.list_data):
 

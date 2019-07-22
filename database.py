@@ -25,8 +25,6 @@ class Database:
                                                  host=self.info[2])
         self.cursor = self.data_base.cursor()
 
-
-
     def creation_database(self):
         """ Running file "base.sql" requests : for the creation of the database """
         with open("base.sql", "r") as file:
@@ -46,13 +44,12 @@ class Database:
         # executed "use Purbeurre" request
         self.cursor.execute("USE Purbeurre;")
 
-        # no insertion if the table Food already contains data
+        # no insertion if the table Food already contains any data
         self.cursor.execute("SELECT * FROM Food;")
         data_table_food = self.cursor.fetchall()
-
         if len(data_table_food) == 0:
 
-            # instantiate the class Api
+            # instantiate the class Call_api
             NEW_CALL_API = call_api.Call_api()
             NEW_CALL_API.load_data()
             categories = NEW_CALL_API.categories

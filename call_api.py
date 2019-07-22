@@ -12,6 +12,7 @@ import requests
 
 
 class Call_api:
+    """ Call A.P.I. Open Food Facts """
 
     def __init__(self):
         # food categories (list) used in the program
@@ -31,4 +32,3 @@ class Call_api:
                                 .format("\'"+elt+"\'"))
             data = json.loads(request.text)
             self.list_data.append(data)
-

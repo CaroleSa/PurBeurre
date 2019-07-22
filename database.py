@@ -7,7 +7,7 @@
 
 # imports
 import mysql.connector
-import api
+import call_api
 
 
 
@@ -26,7 +26,7 @@ class Database:
         self.cursor = self.data_base.cursor()
 
         # instantiate the class Api
-        new_api = api.Api()
+        new_api = call_api.Call_api()
         self.categories = new_api.categories
         self.list_data = new_api.list_data
 
@@ -84,7 +84,7 @@ class Database:
     def select_categories_database(self):
         """ use database to selected categories """
         self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("SELECT id, categories FROM Category ORDER BY id;")
+        self.cursor.execute("EXECUTE select_categories;")
         all_id_name_categories = self.cursor.fetchall()
         return all_id_name_categories
 

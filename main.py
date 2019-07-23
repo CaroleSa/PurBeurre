@@ -22,27 +22,31 @@ class User_interface:
         self.new_database = db.Database()
 
         # attributes
+        self.text = ""
+        self.user_answer = ""
         self.user_answer_id_category = 0
         self.user_answer_i_food = 0
-        self.dict_equivalence_i_id_food = {}
-        self.dict_equivalence_i_id_food_substitute = {}
 
+    def question_answer(self):
+        """ displays the question and retrieves the user's answer """
+        print(self.text)
+        self.user_answer = input("Tapez votre choix : ")
 
     def menu(self):
         """ menu """
         # first question to the user : menu
-        print("\nRenseignez votre choix avant de valider : "
-              "\nchoix 1 > Quel aliment souhaitez-vous remplacer ?"
-              "\nchoix 2 > Retrouver mes aliments substitués "
-              "\nchoix 3 > Quitter")
+        self.text = "\nRenseignez votre choix avant de valider : " \
+                    "\nchoix 1 > Quel aliment souhaitez-vous remplacer ?" \
+                    "\nchoix 2 > Retrouver mes aliments substitués" \
+                    "\nchoix 3 > Quitter"
 
-        # user's answer
-        user_answer_choice_menu = input("Tapez votre choix : ")
-        if str(user_answer_choice_menu) == "1":
+        self.question_answer()
+
+        if str(self.user_answer) == "1":
             self.propose_categories()
-        elif str(user_answer_choice_menu) == "2":
+        elif str(self.user_answer) == "2":
             self.show_food_and_substitute()
-        elif str(user_answer_choice_menu) == "3":
+        elif str(self.user_answer) == "3":
             print("\nMerci pour votre visite et à bientôt !")
 
         # if the answer does not exist
@@ -91,17 +95,18 @@ class User_interface:
         print("\nRenseignez le numéro de l'aliment choisi :")
         print("choix 0 > Retourner aux catégories")
         i = 0
+        dict_equivalence_i_id_food = {}
         for id_food, name_food in all_id_name_food:
             i += 1
             print("choix", i, ">", name_food)
-            self.dict_equivalence_i_id_food[i] = id_food
+            dict_equivalence_i_id_food[i] = id_food
 
         # user's answer
         self.user_answer_i_food = input("Votre choix : ")
         try:
             if int(self.user_answer_i_food) <= len(all_id_name_food) \
                     and int(self.user_answer_i_food) != 0:
-                self.propose_substitute(0)
+                self.propose_substitute(0, dict_equivalence_i_id_food)
             elif int(self.user_answer_i_food) == 0:
                 self.propose_categories()
 
@@ -116,10 +121,10 @@ class User_interface:
             self.propose_foods()
 
 
-    def propose_substitute(self, read_line_substitute):
+    def propose_substitute(self, read_line_substitute, dict_equivalence):
         """ detail of the substitute and choice to save it """
         # id recovery from i (choice number)
-        user_answer_id_food = self.dict_equivalence_i_id_food.get(int(self.user_answer_i_food))
+        user_answer_id_food = dict_equivalence.get(int(self.user_answer_i_food))
 
         # call Database method : select the substitute and the substituted food
         result_food_chooses_and_substitute = self.new_database.select_substitute\
@@ -157,17 +162,17 @@ class User_interface:
         """ the food chosen does not have a substitute,
         propose a new search or return to the menu """
         # new choices
-        print("\nL'aliment", name_food_chooses,
-              "n'a pas d'autres substituts possibles."
-              "\n\nSouhaitez-vous faire une nouvelle recherche ? "
-              "\nchoix 1 > oui "
-              "\nchoix 2 > non")
+        self.text = "\nL'aliment {}" \
+                    " n'a pas d'autres substituts possibles." \
+                    "\n\nSouhaitez-vous faire une nouvelle recherche ?" \
+                    "\nchoix 1 > oui" \
+                    "\nchoix 2 > non".format(name_food_chooses)
 
-        # user's answer
-        user_answer_new_search = input("Votre choix : ")
-        if user_answer_new_search == "1":
+        self.question_answer()
+
+        if self.user_answer == "1":
             self.propose_categories()
-        elif user_answer_new_search == "2":
+        elif self.user_answer == "2":
             self.menu()
 
         # if the answer does not exist
@@ -179,28 +184,28 @@ class User_interface:
     def save_substituted_food(self, name_substitute, read_line_substitute, user_answer_id_food):
         """ propose save or another substitute """
         # question to the user
-        print("\nSouhaitez-vous enregistrer l'aliment et son substitut ? "
-              "\nchoix 1 > oui "
-              "\nchoix 2 > non "
-              "\nchoix 3 > Je souhaite un autre substitut possible")
+        self.text = "\nSouhaitez-vous enregistrer l'aliment et son substitut ? " \
+                    "\nchoix 1 > oui " \
+                    "\nchoix 2 > non " \
+                    "\nchoix 3 > Je souhaite un autre substitut possible"
 
-        # user's answer
-        user_answer_save_food = input("Votre choix : ")
+        self.question_answer()
+
         try:
             # use Database method for save substituted food and his substitute into database
-            if user_answer_save_food == "1":
+            if self.user_answer == "1":
                 self.new_database.insert_favorite_food(user_answer_id_food, name_substitute)
                 print("\nNous avons bien enregistré l'aliment "
                       "et son substitut", name_substitute+".")
                 self.menu()
 
             # no save substituted food and his substitute
-            elif user_answer_save_food == "2":
+            elif self.user_answer == "2":
                 print("\nEnregistrement non effectué.")
                 self.menu()
 
             # propose a new substitute
-            elif user_answer_save_food == "3":
+            elif self.user_answer == "3":
                 read_line_substitute += 1
                 self.propose_substitute(0 + read_line_substitute)
 
@@ -234,18 +239,19 @@ class User_interface:
             print("\nVoici vos aliments et substituts enregistrés :"
                   "\nchoix 0 > quitter mes aliments et substituts enregistrés")
             i = 0
+            dict_equivalence_i_id_food_substitute = {}
             for id_name_substitute, name_substituted_food \
                     in zip(all_id_name_substitute, all_substituted_food):
                 i += 1
                 print("choix", i, ">", name_substituted_food[0],
                       "(substitué par", id_name_substitute[1]+")")
-                self.dict_equivalence_i_id_food_substitute[i] = id_name_substitute[0]
+                dict_equivalence_i_id_food_substitute[i] = id_name_substitute[0]
             print("Tapez un choix pour avoir plus de détail sur le substitut ou le supprimer.")
 
             # user's answer
             try:
                 user_answer_choice_i_substitute = input("Votre choix : ")
-                user_answer_choice_id_substitute = self.dict_equivalence_i_id_food_substitute.get\
+                user_answer_choice_id_substitute = dict_equivalence_i_id_food_substitute.get\
                     (int(user_answer_choice_i_substitute))
                 if int(user_answer_choice_i_substitute) <= len(all_substituted_food) \
                         and int(user_answer_choice_i_substitute) != 0:
@@ -271,31 +277,31 @@ class User_interface:
             (user_answer_choice_id_substitute)
 
         # display the detail of the substitute
-        for name_substitute, nutriscore_substitute, description_substitute, store_substitute, \
-                link_substitute in show_substitute:
-            print("\nAliment : ", name_substitute,
-                  "\nNutriscore : ", nutriscore_substitute,
-                  "\nDescription : ", description_substitute,
-                  "\nMagasin(s) où le trouver : ", store_substitute,
-                  "\nLien d'information : ", link_substitute,
-                  "\n\nVous souhaitez : "
-                  "\nchoix 1 : supprimer cet aliment"
-                  "\nchoix 2 : chercher un autre aliment substitué enregistré"
-                  "\nchoix 3 : retourner au menu")
+        self.text = "\nAliment : {0}" \
+                    "\nNutriscore : {1} " \
+                    "\nDescription : {2} " \
+                    "\nMagasin(s) où le trouver : {3} " \
+                    "\nLien d'information : {4} " \
+                    "\n\nVous souhaitez : " \
+                    "\nchoix 1 : supprimer cet aliment" \
+                    "\nchoix 2 : chercher un autre aliment substitué enregistré" \
+                    "\nchoix 3 : retourner au menu".format((show_substitute[0])[0], (show_substitute[0])[1],
+                                                           (show_substitute[0])[2],(show_substitute[0])[3],
+                                                           (show_substitute[0])[4])
 
-            # user's answer
-            user_answer_return_delete_substitute_menu = input("Votre choix : ")
-            if int(user_answer_return_delete_substitute_menu) == 1:
-                self.delete_food_substitute(user_answer_choice_id_substitute)
-            elif int(user_answer_return_delete_substitute_menu) == 2:
-                self.show_food_and_substitute()
-            elif int(user_answer_return_delete_substitute_menu) == 3:
-                self.menu()
+        self.question_answer()
 
-            # if the answer does not exist
-            else:
-                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2")
-                self.detail_substitute(all_substituted_food, user_answer_choice_id_substitute)
+        if int(self.user_answer) == 1:
+            self.delete_food_substitute(user_answer_choice_id_substitute)
+        elif int(self.user_answer) == 2:
+            self.show_food_and_substitute()
+        elif int(self.user_answer) == 3:
+            self.menu()
+
+        # if the answer does not exist
+        else:
+            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2")
+            self.detail_substitute(all_substituted_food, user_answer_choice_id_substitute)
 
 
     def delete_food_substitute(self, user_answer_choice_id_substitute):

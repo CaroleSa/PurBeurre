@@ -25,6 +25,12 @@ class Controller:
         all_id_name_categories = self.new_database.select_categories_database()
         return all_id_name_categories
 
+    def get_id_name_foods(self):
+        # call Database method : use database for selected foods
+        all_id_name_foods = self.new_database.select_foods_database(self.user_answer_id_category)
+        return all_id_name_foods
+
+
     def menu(self):
         """ menu """
         # first question to the user : menu
@@ -83,36 +89,35 @@ class Controller:
 
     def propose_foods(self):
         """ choice of food """
-        # call Database method : use database for selected foods
-        all_id_name_food = self.new_database.select_foods_database(self.user_answer_id_category)
-
         # display the foods
-        print("\nRenseignez le numéro de l'aliment choisi :")
-        print("choix 0 > Retourner aux catégories")
+        text = "\nRenseignez le numéro de l'aliment choisi :\nchoix 0 > Retourner aux catégories"
         i = 0
         dict_equivalence_i_id_food = {}
-        for id_food, name_food in all_id_name_food:
+        for id_foods, name_foods in self.get_id_name_foods():
             i += 1
-            print("choix", i, ">", name_food)
-            dict_equivalence_i_id_food[i] = id_food
+            text_choices = "\nchoix {} > {}".format(i, name_foods)
+            text = text + text_choices
+            dict_equivalence_i_id_food[i] = id_foods
 
         # user's answer
-        self.user_answer_i_food = input("Votre choix : ")
+        self.user_answer_i_food = int(self.cli.question_answer(text))
         try:
-            if int(self.user_answer_i_food) <= len(all_id_name_food) \
-                    and int(self.user_answer_i_food) != 0:
+            if self.user_answer_i_food <= len(self.get_id_name_foods()) \
+                    and self.user_answer_i_food != 0:
                 self.propose_substitute(0, dict_equivalence_i_id_food)
-            elif int(self.user_answer_i_food) == 0:
+            elif self.user_answer_i_food == 0:
                 self.propose_categories()
 
             # if the answer does not exist
             else:
-                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et",
-                      len(all_id_name_food), ".")
+                message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}."\
+                    .format(len(self.get_id_name_foods()))
+                self.cli.display_message(message)
                 self.propose_foods()
         except ValueError:
-            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et",
-                  len(all_id_name_food), ".")
+            message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}." \
+                .format(len(self.get_id_name_foods()))
+            self.cli.display_message(message)
             self.propose_foods()
 
 

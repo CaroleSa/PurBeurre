@@ -5,8 +5,7 @@
 
 
 
-# imports
-from mysql.connector.errors import IntegrityError
+
 
 import controller as ct
 # pylint: disable=too-many-function-args

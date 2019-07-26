@@ -4,8 +4,12 @@
 """ Class Controller """
 
 
+
+# imports
+from mysql.connector.errors import IntegrityError
 import database as db
 import main
+
 
 
 class Controller:
@@ -30,11 +34,14 @@ class Controller:
         all_id_name_foods = self.new_database.select_foods_database(self.user_answer_id_category)
         return all_id_name_foods
 
-    def get_food_chooses_substitute(self):
+    def get_food_chooses_substitute(self, read_line_substitute):
         # call Database method : select the substitute and the substituted food
         result_food_chooses_and_substitute = self.new_database.select_substitute\
             (self.user_answer_id_category, self.user_answer_id_food, read_line_substitute)
         return result_food_chooses_and_substitute
+
+    def save_favorite_food(self, name_substitute):
+        self.new_database.insert_favorite_food(self.user_answer_id_food, name_substitute)
 
 
     def menu(self):
@@ -132,97 +139,95 @@ class Controller:
     def propose_substitute(self, read_line_substitute):
         """ detail of the substitute and choice to save it """
 
+        def order_letters(letter):
+            """ indicates the location number of letters of the alphabet """
+            return int(ord(letter) - ord('a') + 1)
 
-        # call Database method : select the substitute and the substituted food
-        result_food_chooses_and_substitute = self.new_database.select_substitute\
-            (self.user_answer_id_category, self.user_answer_id_food, read_line_substitute)
+        food_chooses_and_substitute = self.get_food_chooses_substitute(read_line_substitute)
 
-        # 'for loop' for use data of the database
-        for name_food_chooses, nutriscore_of_food_chooses, name_substitute, \
-                nutriscore_substitute, description_substitute, store_substitute, \
-                link_substitute in result_food_chooses_and_substitute:
+        # if the food chosen does not have a substitute
+        if order_letters(food_chooses_and_substitute[0][1]) \
+                <= order_letters(food_chooses_and_substitute[0][3]):
+            self.no_substitute(food_chooses_and_substitute[0][0])
 
-            def order_letters(letter):
-                """ indicates the location number of letters of the alphabet """
-                return int(ord(letter) - ord('a') + 1)
-
-            # if the food chosen does not have a substitute
-            if order_letters(nutriscore_of_food_chooses) \
-                    <= order_letters(nutriscore_substitute):
-                self.no_substitute(name_food_chooses)
-
-            # if the food chosen have a substitute > display the detail of the substitute
-            else:
-                print("\nL'aliment", name_food_chooses,
-                      "(Nutriscore :", nutriscore_of_food_chooses,
-                      ") peut être remplacé par", name_substitute,
-                      ":\nnutriscore :", nutriscore_substitute,
-                      "\nDescription :", description_substitute,
-                      "\nMagasin(s) où le trouver :", store_substitute,
-                      "\nLien internet :", link_substitute)
-                self.save_substituted_food(name_substitute, read_line_substitute)
-
+        # if the food chosen have a substitute > display the detail of the substitute
+        else:
+            message = ""
+            text_list = ["L'aliment :", "Nutriscore :", "Peut être remplacé par :", "Nutriscore :", "Description :",
+                         "Magasins où le trouver :", "Lien internet :"]
+            i = 0
+            for elt in text_list:
+                text_substitute = "\n {} {}".format(elt, food_chooses_and_substitute[0][i])
+                i += 1
+                message = message + text_substitute
+            self.cli.display_message(message)
+            self.save_substituted_food(food_chooses_and_substitute[0][0], read_line_substitute)
 
     def no_substitute(self, name_food_chooses):
         """ the food chosen does not have a substitute,
         propose a new search or return to the menu """
         # new choices
-        self.text = "\nL'aliment {}" \
-                    " n'a pas d'autres substituts possibles." \
-                    "\n\nSouhaitez-vous faire une nouvelle recherche ?" \
-                    "\nchoix 1 > oui" \
-                    "\nchoix 2 > non".format(name_food_chooses)
+        text = "\nL'aliment {}" \
+                " n'a pas d'autres substituts possibles." \
+                "\n\nSouhaitez-vous faire une nouvelle recherche ?" \
+                "\nchoix 1 > oui" \
+                "\nchoix 2 > non".format(name_food_chooses)
 
-        self.question_answer()
+        user_answer = self.cli.question_answer(text)
 
-        if self.user_answer == "1":
+        if user_answer == "1":
             self.propose_categories()
-        elif self.user_answer == "2":
+        elif user_answer == "2":
             self.menu()
 
         # if the answer does not exist
         else:
-            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2.")
+            message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2."
+            self.cli.display_message(message)
             self.no_substitute(name_food_chooses)
 
 
     def save_substituted_food(self, name_substitute, read_line_substitute):
         """ propose save or another substitute """
         # question to the user
-        self.text = "\nSouhaitez-vous enregistrer l'aliment et son substitut ? " \
-                    "\nchoix 1 > oui " \
-                    "\nchoix 2 > non " \
-                    "\nchoix 3 > Je souhaite un autre substitut possible"
+        text = "\nSouhaitez-vous enregistrer l'aliment et son substitut ? " \
+                "\nchoix 1 > oui " \
+                "\nchoix 2 > non " \
+                "\nchoix 3 > Je souhaite un autre substitut possible"
 
-        self.question_answer()
+        user_answer = self.cli.question_answer(text)
 
         try:
             # use Database method for save substituted food and his substitute into database
-            if self.user_answer == "1":
-                self.new_database.insert_favorite_food(self.user_answer_id_food, name_substitute)
-                print("\nNous avons bien enregistré l'aliment "
-                      "et son substitut", name_substitute+".")
+            if user_answer == "1":
+                self.save_favorite_food(name_substitute)
+                message = "\nNous avons bien enregistré l'aliment et son substitut {}.".format(name_substitute)
+                self.cli.display_message(message)
                 self.menu()
 
             # no save substituted food and his substitute
-            elif self.user_answer == "2":
-                print("\nEnregistrement non effectué.")
+            elif user_answer == "2":
+                message = "\nEnregistrement non effectué."
+                self.cli.display_message(message)
                 self.menu()
 
             # propose a new substitute
-            elif self.user_answer == "3":
+            elif user_answer == "3":
                 read_line_substitute += 1
                 self.propose_substitute(0 + read_line_substitute)
 
             # if the answer does not exist or if the food is already registered
             else:
-                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
+                message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3."
+                self.cli.display_message(message)
                 self.save_substituted_food(name_substitute, read_line_substitute)
         except ValueError:
-            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
+            message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3."
+            self.cli.display_message(message)
             self.save_substituted_food(name_substitute, read_line_substitute)
         except IntegrityError:
-            print("\nCet aliment et son substitut sont déjà enregistrés.")
+            message = "\nCet aliment et son substitut sont déjà enregistrés."
+            self.cli.display_message(message)
             self.show_food_and_substitute()
 
 

@@ -90,7 +90,7 @@ class Database:
     def select_categories_database(self):
         """ use database to selected categories """
         self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("""EXECUTE select_categories""")
+        self.cursor.execute("""SELECT id, categories FROM Category ORDER BY id;""")
         all_id_name_categories = self.cursor.fetchall()
         return all_id_name_categories
 

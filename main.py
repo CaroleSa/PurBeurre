@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # coding: UTF-8
 
-""" Class User_interface """
+""" Class CommandLineInterface """
 
 
 
@@ -9,17 +9,19 @@
 from mysql.connector.errors import IntegrityError
 
 import database as db
+import controller as ct
 # pylint: disable=too-many-function-args
 
 
 
-class User_interface:
+class CommandLineInterface:
     """ Command line interface"""
 
 
     def __init__(self):
         # instantiate the class Database
         self.new_database = db.Database()
+        self.new_controller = ct.Controller()
 
         # attributes
         self.text = ""
@@ -57,8 +59,7 @@ class User_interface:
 
     def propose_categories(self):
         """ choice of category """
-        # call Database method : use database for selected categories
-        all_id_name_categories = self.new_database.select_categories_database()
+        all_id_name_categories = self.new_controller.get_id_name_categories()
 
         # display the categories
         print("\nRenseignez le numéro de la catégorie choisie :")
@@ -316,7 +317,7 @@ class User_interface:
 
 
 # instantiate the class User and call menu() method
-NEW_USER = User_interface()
+NEW_USER = CommandLineInterface()
 NEW_USER.menu()
 
 def main():
@@ -326,3 +327,6 @@ def main():
 if __name__ == "main":
     # execute only if run as a script
     main()
+
+
+# plus de lien avec database !!!

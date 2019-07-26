@@ -43,6 +43,14 @@ class Controller:
     def save_favorite_food(self, name_substitute):
         self.new_database.insert_favorite_food(self.user_answer_id_food, name_substitute)
 
+    def get_favorite_food_and_substitute(self):
+        # call Database method : select the favorite foods and their substitutes
+        all_id_name_substitute_and_substituted_food = self.new_database.select_favorite_foods()
+        return all_id_name_substitute_and_substituted_food
+
+
+
+
 
     def menu(self):
         """ menu """
@@ -233,10 +241,12 @@ class Controller:
 
     def show_food_and_substitute(self):
         """ show the favorite foods """
-        # call Database method : select the favorite foods and their substitutes
-        all_id_name_substitute = self.new_database.select_favorite_foods()[0]
-        all_substituted_food = self.new_database.select_favorite_foods()[1]
 
+        all_id_name_substitute = self.get_favorite_food_and_substitute()[0]
+        all_substituted_food = self.get_favorite_food_and_substitute()[1]
+
+        print(all_id_name_substitute)
+        print(all_substituted_food)
         # if not exist favorite foods
         if not all_id_name_substitute:
             print("\nVous n'avez pas d'aliments substitués enregistrés.")
@@ -247,18 +257,21 @@ class Controller:
             print("\nVoici vos aliments et substituts enregistrés :"
                   "\nchoix 0 > quitter mes aliments et substituts enregistrés")
             i = 0
+            text = ""
             dict_equivalence_i_id_food_substitute = {}
-            for id_name_substitute, name_substituted_food \
-                    in zip(all_id_name_substitute, all_substituted_food):
+            list = range(0, len(all_substituted_food))
+            for elt in list:
                 i += 1
-                print("choix", i, ">", name_substituted_food[0],
-                      "(substitué par", id_name_substitute[1]+")")
-                dict_equivalence_i_id_food_substitute[i] = id_name_substitute[0]
+                text_choices = "choix {} > {} (substitué par {})".format(i, all_substituted_food[i], all_id_name_substitute[i][1])
+
+                dict_equivalence_i_id_food_substitute[i] = all_id_name_substitute[i][0]
+
+                text = text + text_choices
+            user_answer_choice_i_substitute = self.cli.question_answer(text)
             print("Tapez un choix pour avoir plus de détail sur le substitut ou le supprimer.")
 
             # user's answer
             try:
-                user_answer_choice_i_substitute = input("Votre choix : ")
                 user_answer_choice_id_substitute = dict_equivalence_i_id_food_substitute.get\
                     (int(user_answer_choice_i_substitute))
                 if int(user_answer_choice_i_substitute) <= len(all_substituted_food) \

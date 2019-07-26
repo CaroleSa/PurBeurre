@@ -18,7 +18,7 @@ class Controller:
 
         # attributes
         self.user_answer_id_category = 0
-        self.user_answer_i_food = 0
+        self.user_answer_id_food = 0
 
     def get_id_name_categories(self):
         # call Database method : use database for selected categories
@@ -29,6 +29,12 @@ class Controller:
         # call Database method : use database for selected foods
         all_id_name_foods = self.new_database.select_foods_database(self.user_answer_id_category)
         return all_id_name_foods
+
+    def get_food_chooses_substitute(self):
+        # call Database method : select the substitute and the substituted food
+        result_food_chooses_and_substitute = self.new_database.select_substitute\
+            (self.user_answer_id_category, self.user_answer_id_food, read_line_substitute)
+        return result_food_chooses_and_substitute
 
 
     def menu(self):
@@ -101,10 +107,12 @@ class Controller:
 
         # user's answer
         self.user_answer_i_food = int(self.cli.question_answer(text))
+        # id recovery from i (choice number)
+        self.user_answer_id_food = dict_equivalence_i_id_food.get(int(self.user_answer_i_food))
         try:
             if self.user_answer_i_food <= len(self.get_id_name_foods()) \
                     and self.user_answer_i_food != 0:
-                self.propose_substitute(0, dict_equivalence_i_id_food)
+                self.propose_substitute(0)
             elif self.user_answer_i_food == 0:
                 self.propose_categories()
 
@@ -121,14 +129,13 @@ class Controller:
             self.propose_foods()
 
 
-    def propose_substitute(self, read_line_substitute, dict_equivalence):
+    def propose_substitute(self, read_line_substitute):
         """ detail of the substitute and choice to save it """
-        # id recovery from i (choice number)
-        user_answer_id_food = dict_equivalence.get(int(self.user_answer_i_food))
+
 
         # call Database method : select the substitute and the substituted food
         result_food_chooses_and_substitute = self.new_database.select_substitute\
-            (self.user_answer_id_category, user_answer_id_food, read_line_substitute)
+            (self.user_answer_id_category, self.user_answer_id_food, read_line_substitute)
 
         # 'for loop' for use data of the database
         for name_food_chooses, nutriscore_of_food_chooses, name_substitute, \
@@ -153,9 +160,7 @@ class Controller:
                       "\nDescription :", description_substitute,
                       "\nMagasin(s) où le trouver :", store_substitute,
                       "\nLien internet :", link_substitute)
-                self.save_substituted_food(name_substitute,
-                                           read_line_substitute,
-                                           user_answer_id_food)
+                self.save_substituted_food(name_substitute, read_line_substitute)
 
 
     def no_substitute(self, name_food_chooses):
@@ -181,7 +186,7 @@ class Controller:
             self.no_substitute(name_food_chooses)
 
 
-    def save_substituted_food(self, name_substitute, read_line_substitute, user_answer_id_food):
+    def save_substituted_food(self, name_substitute, read_line_substitute):
         """ propose save or another substitute """
         # question to the user
         self.text = "\nSouhaitez-vous enregistrer l'aliment et son substitut ? " \
@@ -194,7 +199,7 @@ class Controller:
         try:
             # use Database method for save substituted food and his substitute into database
             if self.user_answer == "1":
-                self.new_database.insert_favorite_food(user_answer_id_food, name_substitute)
+                self.new_database.insert_favorite_food(self.user_answer_id_food, name_substitute)
                 print("\nNous avons bien enregistré l'aliment "
                       "et son substitut", name_substitute+".")
                 self.menu()
@@ -212,12 +217,10 @@ class Controller:
             # if the answer does not exist or if the food is already registered
             else:
                 print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
-                self.save_substituted_food(name_substitute, read_line_substitute,
-                                           user_answer_id_food)
+                self.save_substituted_food(name_substitute, read_line_substitute)
         except ValueError:
             print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3.")
-            self.save_substituted_food(name_substitute, read_line_substitute,
-                                       user_answer_id_food)
+            self.save_substituted_food(name_substitute, read_line_substitute)
         except IntegrityError:
             print("\nCet aliment et son substitut sont déjà enregistrés.")
             self.show_food_and_substitute()

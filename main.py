@@ -4,9 +4,7 @@
 """ Class CommandLineInterface """
 
 
-
-
-
+# import
 import controller as ct
 # pylint: disable=too-many-function-args
 
@@ -15,11 +13,11 @@ import controller as ct
 class CommandLineInterface:
     """ Command line interface"""
 
-    def question_answer(self, text, text_input = "Tapez votre choix : "):
+    def question_answer(self, text, text_input="Tapez votre choix : "):
         """ displays the question and retrieves the user's answer """
         print(text)
-        self.user_answer = input(text_input)
-        return self.user_answer
+        user_answer = input(text_input)
+        return user_answer
 
     def display_message(self, message):
         print(message)

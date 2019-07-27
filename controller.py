@@ -41,12 +41,24 @@ class Controller:
         return result_food_chooses_and_substitute
 
     def save_favorite_food(self, name_substitute):
+        # call Database method : save favorite food
         self.new_database.insert_favorite_food(self.user_answer_id_food, name_substitute)
 
     def get_favorite_food_and_substitute(self):
         # call Database method : select the favorite foods and their substitutes
         all_id_name_substitute_and_substituted_food = self.new_database.select_favorite_foods()
         return all_id_name_substitute_and_substituted_food
+
+    def get_detail_substitute(self, user_answer_choice_id_substitute):
+        # call Database method : select the detail of the substitute
+        show_substitute = self.new_database.select_detail_substitute \
+            (user_answer_choice_id_substitute)
+        return show_substitute
+
+    def delete_favorite_food(self, user_answer_choice_id_substitute):
+        # call Database method : delete favorite food
+        self.new_database.delete_favorite_food(user_answer_choice_id_substitute)
+
 
 
 
@@ -161,11 +173,11 @@ class Controller:
         # if the food chosen have a substitute > display the detail of the substitute
         else:
             message = ""
-            text_list = ["L'aliment :", "Nutriscore :", "Peut être remplacé par :", "Nutriscore :", "Description :",
-                         "Magasins où le trouver :", "Lien internet :"]
+            text_list = ["L'aliment", "Nutriscore", "Peut être remplacé par", "Nutriscore", "Description",
+                         "Magasin(s) où le trouver", "Lien internet"]
             i = 0
             for elt in text_list:
-                text_substitute = "\n {} {}".format(elt, food_chooses_and_substitute[0][i])
+                text_substitute = "\n {} : {}".format(elt, food_chooses_and_substitute[0][i])
                 i += 1
                 message = message + text_substitute
             self.cli.display_message(message)
@@ -241,97 +253,93 @@ class Controller:
 
     def show_food_and_substitute(self):
         """ show the favorite foods """
-
+        # call Database method : select the favorite foods and their substitutes
         all_id_name_substitute = self.get_favorite_food_and_substitute()[0]
         all_substituted_food = self.get_favorite_food_and_substitute()[1]
 
-        print(all_id_name_substitute)
-        print(all_substituted_food)
         # if not exist favorite foods
-        if not all_id_name_substitute:
+        if not self.get_favorite_food_and_substitute():
             print("\nVous n'avez pas d'aliments substitués enregistrés.")
             self.menu()
 
         # display favorite foods
         else:
-            print("\nVoici vos aliments et substituts enregistrés :"
-                  "\nchoix 0 > quitter mes aliments et substituts enregistrés")
+            text = "\nVoici vos aliments et substituts enregistrés :" \
+                   "\nchoix 0 > quitter mes aliments et substituts enregistrés"
             i = 0
-            text = ""
             dict_equivalence_i_id_food_substitute = {}
-            list = range(0, len(all_substituted_food))
-            for elt in list:
+            for id_name_substitute, name_substituted_food \
+                    in zip(all_id_name_substitute, all_substituted_food):
                 i += 1
-                text_choices = "choix {} > {} (substitué par {})".format(i, all_substituted_food[i], all_id_name_substitute[i][1])
-
-                dict_equivalence_i_id_food_substitute[i] = all_id_name_substitute[i][0]
-
+                text_choices = "\nchoix {} > {} (substitué par {})".format(i, name_substituted_food[0], id_name_substitute[1])
                 text = text + text_choices
-            user_answer_choice_i_substitute = self.cli.question_answer(text)
-            print("Tapez un choix pour avoir plus de détail sur le substitut ou le supprimer.")
-
+                dict_equivalence_i_id_food_substitute[i] = id_name_substitute[0]
+            text_input = "Tapez un choix pour avoir plus de détail sur le substitut ou le supprimer :"
+            user_answer_choice_i_substitute = int(self.cli.question_answer(text, text_input))
+            user_answer_choice_id_substitute = dict_equivalence_i_id_food_substitute.get \
+                (user_answer_choice_i_substitute)
             # user's answer
             try:
-                user_answer_choice_id_substitute = dict_equivalence_i_id_food_substitute.get\
-                    (int(user_answer_choice_i_substitute))
-                if int(user_answer_choice_i_substitute) <= len(all_substituted_food) \
-                        and int(user_answer_choice_i_substitute) != 0:
+
+                if user_answer_choice_i_substitute <= len(all_substituted_food) \
+                        and user_answer_choice_i_substitute != 0:
                     self.detail_substitute(all_substituted_food, user_answer_choice_id_substitute)
-                elif int(user_answer_choice_i_substitute) == 0:
+                elif user_answer_choice_i_substitute == 0:
                     self.menu()
 
                 # if the answer does not exist
                 else:
-                    print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et",
-                          len(all_substituted_food), ".")
+                    message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}.".format(len(all_substituted_food))
+                    self.cli.display_message(message)
                     self.show_food_and_substitute()
             except ValueError:
-                print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et",
-                      len(all_substituted_food), ".")
+                message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}.".format(len(all_substituted_food))
+                self.cli.display_message(message)
                 self.show_food_and_substitute()
 
 
     def detail_substitute(self, all_substituted_food, user_answer_choice_id_substitute):
         """ display the detail of the substitute """
         # call Database method : select the detail of the substitute
-        show_substitute = self.new_database.select_detail_substitute\
-            (user_answer_choice_id_substitute)
+        show_substitute = self.get_detail_substitute(user_answer_choice_id_substitute)
 
         # display the detail of the substitute
-        self.text = "\nAliment : {0}" \
-                    "\nNutriscore : {1} " \
-                    "\nDescription : {2} " \
-                    "\nMagasin(s) où le trouver : {3} " \
-                    "\nLien d'information : {4} " \
-                    "\n\nVous souhaitez : " \
-                    "\nchoix 1 : supprimer cet aliment" \
-                    "\nchoix 2 : chercher un autre aliment substitué enregistré" \
-                    "\nchoix 3 : retourner au menu".format((show_substitute[0])[0], (show_substitute[0])[1],
-                                                           (show_substitute[0])[2],(show_substitute[0])[3],
-                                                           (show_substitute[0])[4])
+        text_list = ["Aliment", "Nutriscore", "Description", "Magasin(s) où le trouver", "Lien internet"]
+        i = 0
+        text = ""
+        for elt in text_list:
+            text_substitute_favorite = "\n{} : {}".format(elt, (show_substitute[0])[i])
+            i += 1
+            text = text + text_substitute_favorite
 
-        self.question_answer()
+        text_choices = "\n\nVous souhaitez : \nchoix 1 : supprimer cet aliment " \
+                       "\nchoix 2 : chercher un autre aliment substitué enregistré" \
+                       "\nchoix 3 : retourner au menu"
+        text = text + text_choices
 
-        if int(self.user_answer) == 1:
+        user_answer = self.cli.question_answer(text)
+
+        if int(user_answer) == 1:
             self.delete_food_substitute(user_answer_choice_id_substitute)
-        elif int(self.user_answer) == 2:
+        elif int(user_answer) == 2:
             self.show_food_and_substitute()
-        elif int(self.user_answer) == 3:
+        elif int(user_answer) == 3:
             self.menu()
 
         # if the answer does not exist
         else:
-            print("\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2")
+            message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2"
+            self.cli.display_message(message)
             self.detail_substitute(all_substituted_food, user_answer_choice_id_substitute)
 
 
     def delete_food_substitute(self, user_answer_choice_id_substitute):
         """ deleted the favorite food and his substitute """
-        # call Database method : delete favorite food
-        self.new_database.delete_favorite_food(user_answer_choice_id_substitute)
+        self.delete_favorite_food(user_answer_choice_id_substitute)
 
         # confirmation of deletion and return to favorite foods
-        print("\nL'aliment a bien été supprimé.")
+        message = "\nL'aliment a bien été supprimé."
+        self.cli.display_message(message)
         self.show_food_and_substitute()
 
 # instantiate the class Controller and call menu() method

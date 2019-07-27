@@ -15,10 +15,10 @@ import controller as ct
 class CommandLineInterface:
     """ Command line interface"""
 
-    def question_answer(self, text):
+    def question_answer(self, text, text_input = "Tapez votre choix : "):
         """ displays the question and retrieves the user's answer """
         print(text)
-        self.user_answer = input("Tapez votre choix : ")
+        self.user_answer = input(text_input)
         return self.user_answer
 
     def display_message(self, message):

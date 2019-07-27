@@ -13,9 +13,11 @@ import main
 
 
 class Controller:
+    """ logic and program direction """
 
 
     def __init__(self):
+        """ constructor """
         # instantiate the class Database and CommandLineInterface
         self.new_database = db.Database()
         self.cli = main.CommandLineInterface()
@@ -26,44 +28,51 @@ class Controller:
 
 
     def get_id_name_categories(self):
-        # call Database method : use database for selected the name and id categories
+        """ use database for selected the name and id categories """
+        # call Database method
         all_id_name_categories = self.new_database.select_categories_database()
         return all_id_name_categories
 
 
     def get_id_name_foods(self):
-        # call Database method : use database for selected the name and id foods
+        """ use database for selected the name and id foods """
+        # call Database method
         all_id_name_foods = self.new_database.select_foods_database(self.user_answer_id_category)
         return all_id_name_foods
 
 
     def get_food_chooses_substitute(self, read_line_substitute):
-        # call Database method : select the substituted food and this substitute
+        """ select the substituted food and this substitute """
+        # call Database method
         result_food_chooses_and_substitute = self.new_database.select_substitute\
             (self.user_answer_id_category, self.user_answer_id_food, read_line_substitute)
         return result_food_chooses_and_substitute
 
 
     def save_favorite_food(self, name_substitute):
-        # call Database method : save favorite food
+        """ save favorite food """
+        # call Database method
         self.new_database.insert_favorite_food(self.user_answer_id_food, name_substitute)
 
 
     def get_favorite_foods_and_substitute(self):
-        # call Database method : select the favorite foods and their substitutes
+        """ select the favorite foods and their substitutes """
+        # call Database method
         all_id_name_substitute_and_substituted_food = self.new_database.select_favorite_foods()
         return all_id_name_substitute_and_substituted_food
 
 
     def get_detail_substitute(self, user_answer_choice_id_substitute):
-        # call Database method : select the detail of the substitute chooses
+        """ select the detail of the substitute chooses """
+        # call Database method
         show_substitute = self.new_database.select_detail_substitute \
             (user_answer_choice_id_substitute)
         return show_substitute
 
 
     def delete_favorite_food(self, user_answer_choice_id_substitute):
-        # call Database method : delete favorite food
+        """ delete favorite food """
+        # call Database method
         self.new_database.delete_favorite_food(user_answer_choice_id_substitute)
 
 
@@ -142,7 +151,6 @@ class Controller:
             # addition of elements in the dictionary : choice number and food id
             dict_equivalence_i_id_food[i] = id_foods
 
-
         # call cli method to display the text and recovery of the user input
         user_answer_i_food = int(self.cli.question_answer(text))
 
@@ -194,8 +202,8 @@ class Controller:
         else:
             # creation of the message : detail of the substitute
             message = ""
-            text_list = ["L'aliment", "Nutriscore", "Peut être remplacé par", "Nutriscore", "Description",
-                         "Magasin(s) où le trouver", "Lien internet"]
+            text_list = ["L'aliment", "Nutriscore", "Peut être remplacé par", "Nutriscore",
+                         "Description", "Magasin(s) où le trouver", "Lien internet"]
             i = 0
             for elt in text_list:
                 text_substitute = "\n {} : {}".format(elt, food_chooses_and_substitute[0][i])
@@ -251,7 +259,8 @@ class Controller:
             if user_answer == "1":
                 # save substituted food and his substitute
                 self.save_favorite_food(name_substitute)
-                message = "\nNous avons bien enregistré l'aliment et son substitut {}.".format(name_substitute)
+                message = "\nNous avons bien enregistré l'aliment et son substitut {}."\
+                    .format(name_substitute)
                 self.cli.display_message(message)
                 self.menu()
 
@@ -303,20 +312,24 @@ class Controller:
 
             dict_equivalence_i_id_food_substitute = {}  # creation of a dictionary
             i = 0
-            for id_name_substitute, name_substituted_food in zip(all_id_name_substitute, all_substituted_food):
+            for id_name_substitute, name_substituted_food in zip(all_id_name_substitute,
+                                                                 all_substituted_food):
                 i += 1
-                text_choices = "\nchoix {} > {} (substitué par {})".format(i, name_substituted_food[0], id_name_substitute[1])
+                text_choices = "\nchoix {} > {} (substitué par {})"\
+                    .format(i, name_substituted_food[0], id_name_substitute[1])
                 text = text + text_choices
 
                 # addition of elements in the dictionary : choice number and favorite food id
                 dict_equivalence_i_id_food_substitute[i] = id_name_substitute[0]
 
             # call cli method to display the text and recovery of the user input
-            text_input = "Tapez un choix pour avoir plus de détail sur le substitut ou le supprimer :"
+            text_input = "Tapez un choix pour avoir plus de détail sur le substitut " \
+                         "ou le supprimer :"
             user_answer_choice_i_substitute = int(self.cli.question_answer(text, text_input))
 
             # recovery of the favorite food id
-            user_answer_choice_id_substitute = dict_equivalence_i_id_food_substitute.get(user_answer_choice_i_substitute)
+            user_answer_choice_id_substitute = dict_equivalence_i_id_food_substitute.get\
+                (user_answer_choice_i_substitute)
 
             try:
                 # conditions
@@ -328,12 +341,14 @@ class Controller:
 
                 # if the answer does not exist
                 else:
-                    message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}.".format(len(all_substituted_food))
+                    message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}."\
+                        .format(len(all_substituted_food))
                     self.cli.display_message(message)
                     self.show_food_and_substitute()
 
             except ValueError:
-                message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}.".format(len(all_substituted_food))
+                message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}."\
+                    .format(len(all_substituted_food))
                 self.cli.display_message(message)
                 self.show_food_and_substitute()
 
@@ -345,7 +360,8 @@ class Controller:
 
         # creation of the message : detail of the favorite substitute
         text = ""
-        text_list = ["Aliment", "Nutriscore", "Description", "Magasin(s) où le trouver", "Lien internet"]
+        text_list = ["Aliment", "Nutriscore", "Description", "Magasin(s) où le trouver",
+                     "Lien internet"]
         i = 0
         for elt in text_list:
             text_substitute_favorite = "\n{} : {}".format(elt, (show_substitute[0])[i])

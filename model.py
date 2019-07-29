@@ -47,7 +47,7 @@ class Database:
         # no insertion if the table Food already contains any data
         self.cursor.execute("SELECT * FROM Food;")
         data_table_food = self.cursor.fetchall()
-        if len(data_table_food) == 0:
+        if not data_table_food:
 
             # instantiate the class Call_api
             new_call_api = ca.CallApi()

@@ -13,19 +13,22 @@ import controller as ct
 class CommandLineInterface:
     """ Command line interface"""
 
-    def question_answer(self, text, text_input="Tapez votre choix : "):
+    @classmethod
+    def question_answer(cls, text, text_input="Tapez votre choix : "):
         """ displays the question and retrieves the user's answer """
         print(text)
         user_answer = input(text_input)
         return user_answer
 
-    def display_message(self, message):
+    @classmethod
+    def display_message(cls, message):
+        """ displays the message """
         print(message)
 
 
 def main():
     """ use of class Controller """
-    ct
+    ct.Controller()
 
 if __name__ == "main":
     # execute only if run as a script

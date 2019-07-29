@@ -7,8 +7,8 @@
 
 # imports
 from mysql.connector.errors import IntegrityError
-import database as db
-import main
+import model as db
+import view
 
 
 
@@ -20,7 +20,7 @@ class Controller:
         """ constructor """
         # instantiate the class Database and CommandLineInterface
         self.new_database = db.Database()
-        self.cli = main.CommandLineInterface()
+        self.cli = view.CommandLineInterface()
 
         # attributes
         self.user_answer_id_category = 0

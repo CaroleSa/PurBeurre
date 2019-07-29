@@ -50,7 +50,7 @@ class Database:
         if len(data_table_food) == 0:
 
             # instantiate the class Call_api
-            NEW_CALL_API = ca.Call_api()
+            NEW_CALL_API = ca.CallApi()
             NEW_CALL_API.load_data()
             categories = NEW_CALL_API.categories
             list_data = NEW_CALL_API.list_data

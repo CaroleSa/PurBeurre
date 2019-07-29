@@ -11,7 +11,7 @@ import requests
 
 
 
-class Call_api:
+class CallApi:
     """ Call A.P.I. Open Food Facts """
 
     def __init__(self):
@@ -26,9 +26,9 @@ class Call_api:
         # creating the list that contains food data of categories chooses
         for elt in self.categories:
             request = requests.get("https://fr.openfoodfacts.org/cgi/search.pl?action=process"
-                                "&tagtype_0=categories&tag_contains_0=contains&tag_0={0}"
-                                "&sort_by=unique_scans_n&page_size=1000"
-                                "&axis_x=energy&axis_y=products_n&action=display&json=1"
-                                .format("\'"+elt+"\'"))
+                                   "&tagtype_0=categories&tag_contains_0=contains&tag_0={0}"
+                                   "&sort_by=unique_scans_n&page_size=1000"
+                                   "&axis_x=energy&axis_y=products_n&action=display&json=1"
+                                   .format("\'"+elt+"\'"))
             data = json.loads(request.text)
             self.list_data.append(data)

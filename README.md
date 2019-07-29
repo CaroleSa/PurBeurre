@@ -1,24 +1,32 @@
 OC Projet 5 
 
+
 Auteur : 
 Carole Sartori
+
 
 Le programme Pur Beurre a été créé dans le but de proposer une alternative aux aliments caloriques du quotidien.
 Il utilise les données de l'A.P.I. d'Open Food Facts et donne accès, suite au choix d'un aliment,
 à un substitut au nutriscore plus intéressant.
 Il est également possible d'enregistrer ses recherches.
 
+
 Requirements :
 mysql-connector==2.2.9
 mysql-connector-python==8.0.16
 requests==2.22.0  
 
+
 Données configurables :
+
 Le programme fonctionne à partir d'une base MySql :
 Éléments de connexion à MySql (fichier connection.yml)
 
-Catégories d'aliments proposées par le programme (fichier database.py ligne 30 : dans l'attribut "categories")
-Nombre d'aliments proposés dans chaque catégorie (fichier database.py ligne 74 : 100 par défaut)
+Catégories d'aliments proposées par le programme (fichier call_api.py ligne 18 : dans l'attribut "categories")
+
+Nombre d'aliments proposés dans chaque catégorie (fichier model.py ligne 73 : 100 par défaut)
+
+
 
 Fonctionnement du programme :
 Sur le terminal, lors du lancement du programme, 

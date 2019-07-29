@@ -7,7 +7,7 @@
 
 # imports
 from mysql.connector.errors import IntegrityError
-import model as db
+import model
 import view
 
 
@@ -19,8 +19,8 @@ class Controller:
     def __init__(self):
         """ constructor """
         # instantiate the class Database and CommandLineInterface
-        self.new_database = db.Database()
-        self.cli = view.CommandLineInterface()
+        self.new_database = model.Database()
+        self.new_cli = view.CommandLineInterface()
 
         # attributes
         self.user_answer_id_category = 0
@@ -85,7 +85,7 @@ class Controller:
                 "\nchoix 3 > Quitter"
 
         # call cli method to display the text and recovery of the user input
-        user_answer = str(self.cli.question_answer(text))
+        user_answer = str(self.new_cli.question_answer(text))
 
         # conditions
         if user_answer == "1":
@@ -94,12 +94,12 @@ class Controller:
             self.show_food_and_substitute()
         elif user_answer == "3":
             message = "\nMerci pour votre visite et à bientôt !"
-            self.cli.display_message(message)
+            self.new_cli.display_message(message)
 
         # if the answer does not exist
         else:
             message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3."
-            self.cli.display_message(message)
+            self.new_cli.display_message(message)
             self.menu()
 
 
@@ -112,7 +112,7 @@ class Controller:
             text = text + text_choices
 
         # call cli method to display the text and recovery of the user input
-        self.user_answer_id_category = int(self.cli.question_answer(text))
+        self.user_answer_id_category = int(self.new_cli.question_answer(text))
 
         try:
             # conditions
@@ -126,13 +126,13 @@ class Controller:
             else:
                 message = "\nCE CHOIX N'EXISTE PAS.\nVeuillez taper un chiffre entre 0 et {}."\
                     .format(len(self.get_id_name_categories()))
-                self.cli.display_message(message)
+                self.new_cli.display_message(message)
                 self.propose_categories()
 
         except ValueError:
             message = "\nCE CHOIX N'EXISTE PAS.\nVeuillez taper un chiffre entre 0 et {}."\
                 .format(len(self.get_id_name_categories()))
-            self.cli.display_message(message)
+            self.new_cli.display_message(message)
             self.propose_categories()
 
 
@@ -152,7 +152,7 @@ class Controller:
             dict_equivalence_i_id_food[i] = id_foods
 
         # call cli method to display the text and recovery of the user input
-        user_answer_i_food = int(self.cli.question_answer(text))
+        user_answer_i_food = int(self.new_cli.question_answer(text))
 
         # recovery of the chosen food id
         self.user_answer_id_food = dict_equivalence_i_id_food.get(int(user_answer_i_food))
@@ -169,13 +169,13 @@ class Controller:
             else:
                 message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}."\
                     .format(len(self.get_id_name_foods()))
-                self.cli.display_message(message)
+                self.new_cli.display_message(message)
                 self.propose_foods()
 
         except ValueError:
             message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}." \
                 .format(len(self.get_id_name_foods()))
-            self.cli.display_message(message)
+            self.new_cli.display_message(message)
             self.propose_foods()
 
 
@@ -211,7 +211,7 @@ class Controller:
                 message = message + text_substitute
 
             # call cli method to display the message
-            self.cli.display_message(message)
+            self.new_cli.display_message(message)
 
             # call controller method "save_substituted_food"
             self.save_substituted_food(food_chooses_and_substitute[0][0], read_line_substitute)
@@ -228,7 +228,7 @@ class Controller:
                 "\nchoix 2 > non".format(name_food_chooses)
 
         # call cli method to display the text and recovery of the user input
-        user_answer = self.cli.question_answer(text)
+        user_answer = self.new_cli.question_answer(text)
 
         # conditions
         if user_answer == "1":
@@ -239,7 +239,7 @@ class Controller:
         # if the answer does not exist
         else:
             message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2."
-            self.cli.display_message(message)
+            self.new_cli.display_message(message)
             self.no_substitute(name_food_chooses)
 
 
@@ -252,7 +252,7 @@ class Controller:
                 "\nchoix 3 > Je souhaite un autre substitut possible"
 
         # call cli method to display the text and recovery of the user input
-        user_answer = self.cli.question_answer(text)
+        user_answer = self.new_cli.question_answer(text)
 
         try:
             # conditions
@@ -261,13 +261,13 @@ class Controller:
                 self.save_favorite_food(name_substitute)
                 message = "\nNous avons bien enregistré l'aliment et son substitut {}."\
                     .format(name_substitute)
-                self.cli.display_message(message)
+                self.new_cli.display_message(message)
                 self.menu()
 
             elif user_answer == "2":
                 # no save substituted food and his substitute
                 message = "\nEnregistrement non effectué."
-                self.cli.display_message(message)
+                self.new_cli.display_message(message)
                 self.menu()
 
             elif user_answer == "3":
@@ -278,17 +278,17 @@ class Controller:
             # if the answer does not exist or if the food is already registered
             else:
                 message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3."
-                self.cli.display_message(message)
+                self.new_cli.display_message(message)
                 self.save_substituted_food(name_substitute, read_line_substitute)
 
         except ValueError:
             message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3."
-            self.cli.display_message(message)
+            self.new_cli.display_message(message)
             self.save_substituted_food(name_substitute, read_line_substitute)
 
         except IntegrityError:
             message = "\nCet aliment et son substitut sont déjà enregistrés."
-            self.cli.display_message(message)
+            self.new_cli.display_message(message)
             self.show_food_and_substitute()
 
 
@@ -301,7 +301,7 @@ class Controller:
         # if not exist favorite foods
         if not self.get_favorite_foods_and_substitute():
             message = "\nVous n'avez pas d'aliments substitués enregistrés."
-            self.cli.display_message(message)
+            self.new_cli.display_message(message)
             self.menu()
 
         # if exist favorite foods
@@ -325,7 +325,7 @@ class Controller:
             # call cli method to display the text and recovery of the user input
             text_input = "Tapez un choix pour avoir plus de détail sur le substitut " \
                          "ou le supprimer :"
-            user_answer_choice_i_substitute = int(self.cli.question_answer(text, text_input))
+            user_answer_choice_i_substitute = int(self.new_cli.question_answer(text, text_input))
 
             # recovery of the favorite food id
             user_answer_choice_id_substitute = dict_equivalence_i_id_food_substitute.get\
@@ -343,13 +343,13 @@ class Controller:
                 else:
                     message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}."\
                         .format(len(all_substituted_food))
-                    self.cli.display_message(message)
+                    self.new_cli.display_message(message)
                     self.show_food_and_substitute()
 
             except ValueError:
                 message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}."\
                     .format(len(all_substituted_food))
-                self.cli.display_message(message)
+                self.new_cli.display_message(message)
                 self.show_food_and_substitute()
 
 
@@ -374,7 +374,7 @@ class Controller:
         text = text + text_choices
 
         # call cli method to display the text and recovery of the user input
-        user_answer = self.cli.question_answer(text)
+        user_answer = self.new_cli.question_answer(text)
 
         # conditions
         if int(user_answer) == 1:
@@ -387,7 +387,7 @@ class Controller:
         # if the answer does not exist
         else:
             message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2"
-            self.cli.display_message(message)
+            self.new_cli.display_message(message)
             self.detail_substitute(all_substituted_food, user_answer_choice_id_substitute)
 
 
@@ -400,7 +400,7 @@ class Controller:
         message = "\nL'aliment a bien été supprimé."
 
         # call cli method to display the message
-        self.cli.display_message(message)
+        self.new_cli.display_message(message)
 
         # call Controller method "show_food_and_substitute"
         self.show_food_and_substitute()

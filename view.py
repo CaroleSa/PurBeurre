@@ -22,6 +22,7 @@ class CommandLineInterface:
     def display_message(self, message):
         print(message)
 
+
 def main():
     """ use of class Controller """
     ct

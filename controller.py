@@ -215,7 +215,7 @@ class Controller:
             self.new_cli.display_message(message)
 
             # call controller method "save_substituted_food"
-            self.save_substituted_food(food_chooses_and_substitute[0][0], read_line_substitute)
+            self.save_substituted_food(food_chooses_and_substitute[0][2], read_line_substitute)
 
 
     def no_substitute(self, name_food_chooses):
@@ -300,7 +300,7 @@ class Controller:
         all_substituted_food = self.get_favorite_foods_and_substitute()[1]
 
         # if not exist favorite foods
-        if not self.get_favorite_foods_and_substitute():
+        if not all_id_name_substitute:
             message = "\nVous n'avez pas d'aliments substitués enregistrés."
             self.new_cli.display_message(message)
             self.menu()
@@ -325,7 +325,7 @@ class Controller:
 
             # call cli method to display the text and recovery of the user input
             text_input = "Tapez un choix pour avoir plus de détail sur le substitut " \
-                         "ou le supprimer :"
+                         "ou le supprimer : "
             user_answer_choice_i_substitute = int(self.new_cli.question_answer(text, text_input))
 
             # recovery of the favorite food id

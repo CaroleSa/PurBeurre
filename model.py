@@ -34,15 +34,19 @@ class Database:
         # call Database method to insert data
         self.insert_data()
 
-    def insert_data(self):
-        """ Loading data of the A.P.I. Open Food Facts, convert to json
-        and inserting data into the database """
+    def connection_database(self):
+        """ Connection at MySQL and use database """
+        # connection to the database
         self.data_base = mysql.connector.connect(user=self.info[0], password=self.info[1],
                                                  host=self.info[2])
         self.cursor = self.data_base.cursor()
 
         # executed "use Purbeurre" request
         self.cursor.execute("USE Purbeurre;")
+
+    def insert_data(self):
+        """ Inserting data into the database """
+        self.connection_database()
 
         # no insertion if the table Food already contains any data
         self.cursor.execute("SELECT * FROM Food;")

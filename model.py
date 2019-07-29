@@ -50,16 +50,17 @@ class Database:
         if len(data_table_food) == 0:
 
             # instantiate the class Call_api
-            NEW_CALL_API = ca.CallApi()
-            NEW_CALL_API.load_data()
-            categories = NEW_CALL_API.categories
-            list_data = NEW_CALL_API.list_data
+            new_call_api = ca.CallApi()
+            new_call_api.load_data()
+            categories = new_call_api.categories
+            list_data = new_call_api.list_data
 
             for elt, element in zip(categories, list_data):
 
                 # inserting data into Category table
-                insert_data_categories = ("""INSERT IGNORE INTO Category (categories) VALUES({0});"""
-                                      .format("\'"+elt+"\'"))
+                insert_data_categories = ("""INSERT IGNORE INTO Category (categories)
+                                          VALUES({0});"""
+                                          .format("\'"+elt+"\'"))
                 self.cursor.execute(insert_data_categories)
                 self.data_base.commit()
 
@@ -78,8 +79,9 @@ class Database:
                                                 VALUES({0}, 
                                                 (SELECT id FROM Category WHERE categories = {1}),
                                                 {2}, {3}, {4}, {5});"""
-                                                .format(product_name, "\'"+elt+"\'", nutrition_grade,
-                                                        ingredients, store_tags, url))
+                                                .format(product_name, "\'"+elt+"\'",
+                                                        nutrition_grade, ingredients,
+                                                        store_tags, url))
                             self.cursor.execute(insert_data_food)
                             self.data_base.commit()
 

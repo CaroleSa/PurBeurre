@@ -22,6 +22,8 @@ class Controller:
         # instantiate the class Database and CommandLineInterface
         self.new_database = database.Database()
         self.new_cli = view.CommandLineInterface()
+        self.new_categories = database.Categories()
+        self.new_foods = database.Foods()
 
         # attributes
         self.user_answer_id_category = 0
@@ -31,14 +33,14 @@ class Controller:
     def get_id_name_categories(self):
         """ use database for selected the name and id categories """
         # call Database method
-        all_id_name_categories = self.new_database.select_categories_database()
+        all_id_name_categories = self.new_categories.all_id_name_categories
         return all_id_name_categories
 
 
     def get_id_name_foods(self):
         """ use database for selected the name and id foods """
         # call Database method
-        all_id_name_foods = self.new_database.select_foods_database(self.user_answer_id_category)
+        all_id_name_foods = self.new_foods.all_id_name_foods(self.user_answer_id_category)
         return all_id_name_foods
 
 

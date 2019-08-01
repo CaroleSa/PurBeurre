@@ -7,7 +7,7 @@
 
 # imports
 from mysql.connector.errors import IntegrityError
-import model
+import database
 import view
 
 
@@ -20,7 +20,7 @@ class Controller:
     def __init__(self):
         """ constructor """
         # instantiate the class Database and CommandLineInterface
-        self.new_database = model.Database()
+        self.new_database = database.Database()
         self.new_cli = view.CommandLineInterface()
 
         # attributes

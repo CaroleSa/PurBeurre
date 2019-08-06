@@ -8,7 +8,6 @@
 # imports
 import mysql.connector
 import call_api as ca
-import orm
 
 
 
@@ -25,8 +24,6 @@ class Database:
         self.data_base = mysql.connector.connect(user=self.info[0], password=self.info[1],
                                                  host=self.info[2])
         self.cursor = self.data_base.cursor()
-
-        self.new_orm = orm.Orm()
 
     def creation_database(self):
         """ Running file "base.sql" requests : for the creation of the database """
@@ -176,18 +173,3 @@ class Database:
 # instantiate the class Database
 NEW_DATABASE = Database()
 NEW_DATABASE.creation_database()
-
-
-class Categories:
-
-    def __init__(self):
-
-        self.new_orm = orm.Orm()
-        self.all_id_name_categories = self.new_orm.create_categories_list()
-
-class Foods:
-
-    def __init__(self):
-
-        self.new_orm = orm.Orm()
-        self.all_id_name_foods = self.new_orm.create_foods_list()

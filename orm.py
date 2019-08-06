@@ -21,18 +21,18 @@ class Orm:
         self.list = []
 
 
-    def create_list(self, function_data):
+    def create_categories_list(self):
         """ .... """
-        data = self.new_database.function_data
+        data = self.new_database.select_categories_database()
         for elt in data:
             self.list.append(elt)
         return self.list
 
 
-    def create_foods_list(self):
+    def create_foods_list(self, user_answer_id_category):
         """ .... """
-        all_id_name_foods = self.new_database.select_foods_database()
-        for elt in all_id_name_foods:
+        data = self.new_database.select_foods_database(user_answer_id_category)
+        for elt in data:
             self.list.append(elt)
 
         return self.list

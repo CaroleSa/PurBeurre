@@ -9,6 +9,7 @@
 from mysql.connector.errors import IntegrityError
 import database
 import view
+import model
 
 
 
@@ -22,8 +23,6 @@ class Controller:
         # instantiate the class Database and CommandLineInterface
         self.new_database = database.Database()
         self.new_cli = view.CommandLineInterface()
-        self.new_categories = database.Categories()
-        self.new_foods = database.Foods()
 
         # attributes
         self.user_answer_id_category = 0
@@ -33,14 +32,16 @@ class Controller:
     def get_id_name_categories(self):
         """ use database for selected the name and id categories """
         # call Database method
-        all_id_name_categories = self.new_categories.all_id_name_categories
+        new_categories = model.Categories()
+        all_id_name_categories = new_categories.all_id_name_categories
         return all_id_name_categories
 
 
     def get_id_name_foods(self):
         """ use database for selected the name and id foods """
         # call Database method
-        all_id_name_foods = self.new_foods.all_id_name_foods(self.user_answer_id_category)
+        new_foods = model.Foods()
+        all_id_name_foods = new_foods.all_id_name_foods
         return all_id_name_foods
 
 

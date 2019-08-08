@@ -182,7 +182,6 @@ class Database:
                             .format(int(user_answer_choice_id_substitute)))
         self.data_base.commit()
 
-
 # instantiate the class Database
 NEW_DATABASE = Database()
 NEW_DATABASE.creation_database()

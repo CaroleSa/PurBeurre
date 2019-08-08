@@ -189,34 +189,38 @@ class Controller:
             return int(ord(letter) - ord('a') + 1)
 
         # call controller method. This list contains :
-        # [0][0] name food chooses     [0][1] nutriscore of the food chooses
-        # [0][2] name substitute       [0][3] nutriscore of the substitute
-        # [0][4] description of the substitute
-        # [0][5] shop or buy it        [0][6] internet link
-        food_chooses_and_substitute = self.get_food_chooses_substitute(read_line_substitute)
+        # [1][0] name food chooses     [1][1] nutriscore of the food chooses
+        # [0][0] name substitute       [0][1] nutriscore of the substitute
+        # [0][2] description of the substitute
+        # [0][3] shop or buy it        [0][4] internet link
+        result_substitute = self.get_food_chooses_substitute(read_line_substitute)[0]
+        result_food_chooses = self.get_food_chooses_substitute(read_line_substitute)[1]
 
-        # if the food chosen does not have a substitute
-        if order_letters(food_chooses_and_substitute[0][1]) \
-                <= order_letters(food_chooses_and_substitute[0][3]):
-            self.no_substitute(food_chooses_and_substitute[0][0])
+        for elt, element in zip(result_substitute, result_food_chooses):
 
-        # if the food chosen have a substitute
-        else:
-            # creation of the message : detail of the substitute
-            message = ""
-            text_list = ["L'aliment", "Nutriscore", "Peut être remplacé par", "Nutriscore",
-                         "Description", "Magasin(s) où le trouver", "Lien internet"]
-            i = 0
-            for elt in text_list:
-                text_substitute = "\n {} : {}".format(elt, food_chooses_and_substitute[0][i])
-                i += 1
-                message = message + text_substitute
+            # if the food chosen does not have a substitute
+            if order_letters(element.nutriscore) \
+                    <= order_letters(elt.nutriscore):
+                self.no_substitute(element.name_food)
 
-            # call cli method to display the message
-            self.new_cli.display_message(message)
+            # if the food chosen have a substitute
+            else:
+                # creation of the message : detail of the substitute
+                message = ""
+                text_list = ["L'aliment", "Nutriscore", "Peut être remplacé par", "Nutriscore",
+                            "Description", "Magasin(s) où le trouver", "Lien internet"]
+                list = [element.name_food, element.nutriscore, elt.name_food, elt.nutriscore, elt.description, elt.store, elt.link]
+                i = 0
+                for elt1, elt2 in zip(text_list, list):
+                    text_substitute = "\n {} : {}".format(elt1, elt2)
+                    i += 1
+                    message = message + text_substitute
 
-            # call controller method "save_substituted_food"
-            self.save_substituted_food(food_chooses_and_substitute[0][2], read_line_substitute)
+                # call cli method to display the message
+                self.new_cli.display_message(message)
+
+                # call controller method "save_substituted_food"
+                self.save_substituted_food(elt.name_food, read_line_substitute)
 
 
     def no_substitute(self, name_food_chooses):
@@ -297,11 +301,11 @@ class Controller:
     def show_food_and_substitute(self):
         """ show the favorite foods """
         # call Controller method : select the favorite foods and their substitutes
-        all_id_name_substitute = self.get_favorite_foods_and_substitute()[0]
+        all_id_substitute = self.get_favorite_foods_and_substitute()[0]
         all_substituted_food = self.get_favorite_foods_and_substitute()[1]
-
+        all_name_substitute = self.get_favorite_foods_and_substitute()[2]
         # if not exist favorite foods
-        if not all_id_name_substitute:
+        if not all_id_substitute:
             message = "\nVous n'avez pas d'aliments substitués enregistrés."
             self.new_cli.display_message(message)
             self.menu()
@@ -314,15 +318,14 @@ class Controller:
 
             dict_equivalence_i_id_food_substitute = {}  # creation of a dictionary
             i = 0
-            for id_name_substitute, name_substituted_food in zip(all_id_name_substitute,
-                                                                 all_substituted_food):
+            for food, food1, food2 in zip(all_id_substitute, all_substituted_food, all_name_substitute):
                 i += 1
                 text_choices = "\nchoix {} > {} (substitué par {})"\
-                    .format(i, name_substituted_food[0], id_name_substitute[1])
+                    .format(i, food1.name_food[0], food2.name_food)
                 text = text + text_choices
 
                 # addition of elements in the dictionary : choice number and favorite food id
-                dict_equivalence_i_id_food_substitute[i] = id_name_substitute[0]
+                dict_equivalence_i_id_food_substitute[i] = food.id
 
             # call cli method to display the text and recovery of the user input
             text_input = "Tapez un choix pour avoir plus de détail sur le substitut " \
@@ -364,12 +367,15 @@ class Controller:
         text = ""
         text_list = ["Aliment", "Nutriscore", "Description", "Magasin(s) où le trouver",
                      "Lien internet"]
-        print(show_substitute)
-        i = 1
-        for elt, food in zip(text_list, show_substitute):
-            text_substitute_favorite = "\n{} : {}".format(elt, food.link)
-            i += 1
-            text = text + text_substitute_favorite
+        for food in show_substitute:
+            info_favorite = [food.name_food, food.nutriscore, food.description, food.store, food.link]
+
+            i = 0
+            for elt in text_list:
+
+                text_substitute_favorite = "\n{} : {}".format(elt, info_favorite[i])
+                i += 1
+                text = text + text_substitute_favorite
 
         text_choices = "\n\nVous souhaitez : \nchoix 1 : supprimer cet aliment " \
                        "\nchoix 2 : chercher un autre aliment substitué enregistré" \

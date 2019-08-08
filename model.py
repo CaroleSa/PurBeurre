@@ -27,4 +27,4 @@ class Favorite:
     def __init__(self, id, id_food, id_substitute_chooses):
         self.id = id
         self.id_food = id_food
-        self. id_substitute_chooses = id_substitute_chooses
+        self.id_substitute_chooses = id_substitute_chooses

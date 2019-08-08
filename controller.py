@@ -110,7 +110,7 @@ class Controller:
 
         # call cli method to display the text and recovery of the user input
         self.user_answer_id_category = int(self.new_cli.question_answer(text))
-        print(self.user_answer_id_category)
+
         try:
             # conditions
             if self.user_answer_id_category <= len(self.get_id_name_categories()) \

@@ -32,16 +32,14 @@ class Controller:
     def get_id_name_categories(self):
         """ use database for selected the name and id categories """
         # call Database method
-        new_categories = model.Categories()
-        all_id_name_categories = new_categories.all_id_name_categories
+        all_id_name_categories = self.new_database.select_categories_database()
         return all_id_name_categories
 
 
     def get_id_name_foods(self):
         """ use database for selected the name and id foods """
         # call Database method
-        new_foods = model.Foods()
-        all_id_name_foods = new_foods.all_id_name_foods
+        all_id_name_foods = self.new_database.select_foods_database(self.user_answer_id_category)
         return all_id_name_foods
 
 
@@ -111,8 +109,8 @@ class Controller:
         """ choice of category """
         # creation of the text which proposes the categories list
         text = "\nRenseignez le numéro de la catégorie choisie :\nchoix 0 > Retourner au menu"
-        for id_categories, name_categories in self.get_id_name_categories():
-            text_choices = "\nchoix {} > {}".format(id_categories, name_categories)
+        for category in self.get_id_name_categories():
+            text_choices = "\nchoix {} > {}".format(category.id, category.categories)
             text = text + text_choices
 
         # call cli method to display the text and recovery of the user input
@@ -147,13 +145,13 @@ class Controller:
 
         dict_equivalence_i_id_food = {} # creation of a dictionary
         i = 0
-        for id_foods, name_foods in self.get_id_name_foods():
+        for food in self.get_id_name_foods():
             i += 1
-            text_choices = "\nchoix {} > {}".format(i, name_foods)
+            text_choices = "\nchoix {} > {}".format(i, food.name_food)
             text = text + text_choices
 
             # addition of elements in the dictionary : choice number and food id
-            dict_equivalence_i_id_food[i] = id_foods
+            dict_equivalence_i_id_food[i] = food.id
 
         # call cli method to display the text and recovery of the user input
         user_answer_i_food = int(self.new_cli.question_answer(text))
@@ -366,9 +364,10 @@ class Controller:
         text = ""
         text_list = ["Aliment", "Nutriscore", "Description", "Magasin(s) où le trouver",
                      "Lien internet"]
-        i = 0
-        for elt in text_list:
-            text_substitute_favorite = "\n{} : {}".format(elt, (show_substitute[0])[i])
+        print(show_substitute)
+        i = 1
+        for elt, food in zip(text_list, show_substitute):
+            text_substitute_favorite = "\n{} : {}".format(elt, food.link)
             i += 1
             text = text + text_substitute_favorite
 

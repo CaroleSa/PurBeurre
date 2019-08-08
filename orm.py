@@ -1,38 +1,41 @@
 #! /usr/bin/env python3
 # coding: UTF-8
 
+
 """ Class Orm """
 
-
-
-# imports
-import database
-
-
-
+import model
 
 class Orm:
     """ Transforming data into a python object """
 
-    def __init__(self):
-        """ Instantiate the class Database """
-        self.new_database = database.Database()
+    def transform_categories_to_object(self, sql_data):
+        object_list = []
+        for elt in sql_data:
+            data = model.Categories(elt[0], elt[1])
+            object_list.append(data)
+        return object_list
 
-        self.list = []
+    def transform_foods_to_object(self, sql_data):
+        object_list = []
+        for elt in sql_data:
+            data = model.Foods(elt[0], elt[1], 0, 0, 0, 0, 0)
+            object_list.append(data)
+        print(object_list)
+        return object_list
 
+    def transform_substitute_to_object(self, sql_data):
+        object_list = []
+        for elt in sql_data:
+            data = model.Foods(elt[0], elt[1], 0, 0, 0, 0, 0)
+            object_list.append(data)
+        print(object_list)
+        return object_list
 
-    def create_categories_list(self):
-        """ .... """
-        data = self.new_database.select_categories_database()
-        for elt in data:
-            self.list.append(elt)
-        return self.list
-
-
-    def create_foods_list(self, user_answer_id_category):
-        """ .... """
-        data = self.new_database.select_foods_database(user_answer_id_category)
-        for elt in data:
-            self.list.append(elt)
-
-        return self.list
+    def transform_detail_substitute_to_object(self, sql_data):
+        object_list = []
+        for elt in sql_data:
+            data = model.Foods(0, elt[0], 0, elt[1], elt[2], elt[3], elt[4])
+            object_list.append(data)
+        print(object_list)
+        return object_list

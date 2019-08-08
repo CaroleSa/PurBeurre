@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # coding: UTF-8
 
-""" Class Call_api """
+""" Class CallApi """
 
 
 
@@ -14,10 +14,10 @@ class CallApi:
     """ Call A.P.I. Open Food Facts """
 
     def __init__(self):
-        # food categories (list) used in the program
+        # creating categories food list used in the program
         self.categories = ['pizza', 'pate a tartiner', 'gateau', 'yaourt', 'bonbon']
 
-        # food data of categories chooses
+        # creating an empty list
         self.list_data = []
 
     def load_data(self):
@@ -29,5 +29,4 @@ class CallApi:
                        'axis_x': 'energy', 'axis_y': 'products_n', 'json': '1'}
             request = requests.get("https://fr.openfoodfacts.org/cgi/search.pl?", params=payload)
             data = request.json()
-            print(data)
             self.list_data.append(data)

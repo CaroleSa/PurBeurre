@@ -9,8 +9,6 @@
 from mysql.connector.errors import IntegrityError
 import database
 import view
-import model
-
 
 
 
@@ -19,63 +17,60 @@ class Controller:
 
 
     def __init__(self):
-        """ constructor """
         # instantiate the class Database and CommandLineInterface
         self.new_database = database.Database()
         self.new_cli = view.CommandLineInterface()
 
-        # attributes
         self.user_answer_id_category = 0
         self.user_answer_id_food = 0
 
 
     def get_id_name_categories(self):
-        """ use database for selected the name and id categories """
+        """ call database to get the data : name and id of categories """
         # call Database method
-        all_id_name_categories = self.new_database.select_categories_database()
-        return all_id_name_categories
+        id_name_categories = self.new_database.select_categories_database()
+        return id_name_categories
 
 
     def get_id_name_foods(self):
-        """ use database for selected the name and id foods """
+        """ call database to get the data : name and id of foods """
         # call Database method
-        all_id_name_foods = self.new_database.select_foods_database(self.user_answer_id_category)
-        return all_id_name_foods
+        id_name_foods = self.new_database.select_foods_database(self.user_answer_id_category)
+        return id_name_foods
 
 
     def get_food_chooses_substitute(self, read_line_substitute):
-        """ select the substituted food and this substitute """
+        """ call database to get the data : information about the substituted food and its substitute """
         # call Database method
-        result_food_chooses_and_substitute = self.new_database.select_substitute\
+        info_food_chooses_and_substitute = self.new_database.select_substitute\
             (self.user_answer_id_category, self.user_answer_id_food, read_line_substitute)
-        return result_food_chooses_and_substitute
+        return info_food_chooses_and_substitute
 
 
     def save_favorite_food(self, name_substitute):
-        """ save favorite food """
+        """ call database to save favorite food """
         # call Database method
         self.new_database.insert_favorite_food(self.user_answer_id_food, name_substitute)
 
 
-    def get_favorite_foods_and_substitute(self):
-        """ select the favorite foods and their substitutes """
+    def get_favorite_foods(self):
+        """ call database to get the data : name of favorite foods / name and id of substitutes """
         # call Database method
-        all_id_name_substitute_and_substituted_food = self.new_database.select_favorite_foods()
-        return all_id_name_substitute_and_substituted_food
+        id_name_substitute_name_substituted_food = self.new_database.select_favorite_foods()
+        return id_name_substitute_name_substituted_food
 
 
-    def get_detail_substitute(self, user_answer_choice_id_substitute):
-        """ select the detail of the substitute chooses """
+    def get_detail_substitute(self, user_answer):
+        """ call database to get the data : the information of the substitute chooses """
         # call Database method
-        show_substitute = self.new_database.select_detail_substitute \
-            (user_answer_choice_id_substitute)
-        return show_substitute
+        info_substitute = self.new_database.select_detail_substitute(user_answer)
+        return info_substitute
 
 
-    def delete_favorite_food(self, user_answer_choice_id_substitute):
-        """ delete favorite food """
+    def delete_favorite_food(self, user_answer):
+        """ call database to delete favorite food """
         # call Database method
-        self.new_database.delete_favorite_food(user_answer_choice_id_substitute)
+        self.new_database.delete_favorite_food(user_answer)
 
 
     def menu(self):
@@ -301,9 +296,9 @@ class Controller:
     def show_food_and_substitute(self):
         """ show the favorite foods """
         # call Controller method : select the favorite foods and their substitutes
-        all_id_substitute = self.get_favorite_foods_and_substitute()[0]
-        all_substituted_food = self.get_favorite_foods_and_substitute()[1]
-        all_name_substitute = self.get_favorite_foods_and_substitute()[2]
+        all_id_substitute = self.get_favorite_foods()[0]
+        all_substituted_food = self.get_favorite_foods()[1]
+        all_name_substitute = self.get_favorite_foods()[2]
         # if not exist favorite foods
         if not all_id_substitute:
             message = "\nVous n'avez pas d'aliments substitués enregistrés."

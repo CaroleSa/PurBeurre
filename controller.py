@@ -40,7 +40,8 @@ class Controller:
 
 
     def get_food_chooses_substitute(self, read_line_substitute):
-        """ call database to get the data : information about the substituted food and its substitute """
+        """ call database to get the data : information about the substituted food
+        and its substitute """
         # call Database method
         info_food_chooses_and_substitute = self.new_database.select_substitute\
             (self.user_answer_id_category, self.user_answer_id_food, read_line_substitute)
@@ -199,9 +200,10 @@ class Controller:
                 # creation of the message : detail of the substitute
                 message = ""
                 text_list = ["L'aliment", "Nutriscore", "Peut être remplacé par", "Nutriscore",
-                            "Description", "Magasin(s) où le trouver", "Lien internet"]
+                             "Description", "Magasin(s) où le trouver", "Lien internet"]
                 info_list = [food_chooses.name_food, food_chooses.nutriscore, substitute.name_food,
-                             substitute.nutriscore, substitute.description, substitute.store, substitute.link]
+                             substitute.nutriscore, substitute.description, substitute.store,
+                             substitute.link]
                 i = 0
                 for text, info in zip(text_list, info_list):
                     text_substitute = "\n {} : {}".format(text, info)
@@ -216,7 +218,7 @@ class Controller:
 
 
     def no_substitute(self, name_food_chooses):
-        """ the food chosen does not have a substitute,
+        """ if the food chosen does not have a substitute,
         propose a new search or return to the menu """
         # creation of the text which proposes new choices
         text = "\nL'aliment {}" \
@@ -291,7 +293,7 @@ class Controller:
 
 
     def show_favorite_food(self):
-        """ show the favorite foods """
+        """ the favorite foods """
         # call Controller method : get the favorite foods and their substitutes
         id_favorite = self.get_favorite_foods()[0]
         name_substituted_food = self.get_favorite_foods()[1]
@@ -310,7 +312,9 @@ class Controller:
 
             dict_equivalence_i_id_food_substitute = {}  # creation of a dictionary
             i = 0
-            for favorite, substituted_food, substitute in zip(id_favorite, name_substituted_food, name_substitute):
+            for favorite, substituted_food, substitute in zip(id_favorite,
+                                                              name_substituted_food,
+                                                              name_substitute):
                 i += 1
                 text_choices = "\nchoix {} > {} (substitué par {})"\
                     .format(i, substituted_food.name_food[0], substitute.name_food)
@@ -351,23 +355,21 @@ class Controller:
 
 
     def detail_substitute(self, all_substituted_food, user_answer_choice_id_substitute):
-        """ display the detail of the substitute """
+        """ detail of the substitute """
         # call Controller method : select the detail of the substitute
-        show_substitute = self.get_detail_substitute(user_answer_choice_id_substitute)
+        info_substitute = self.get_detail_substitute(user_answer_choice_id_substitute)
 
         # creation of the message : detail of the favorite substitute
         text = ""
         text_list = ["Aliment", "Nutriscore", "Description", "Magasin(s) où le trouver",
                      "Lien internet"]
-        for food in show_substitute:
-            info_favorite = [food.name_food, food.nutriscore, food.description, food.store, food.link]
 
-            i = 0
-            for elt in text_list:
+        for food in info_substitute:
+            info_list = [food.name_food, food.nutriscore, food.description, food.store, food.link]
 
-                text_substitute_favorite = "\n{} : {}".format(elt, info_favorite[i])
-                i += 1
-                text = text + text_substitute_favorite
+            for text, info in zip(text_list, info_list):
+                text_info_substitute = "\n{} : {}".format(text, info)
+                text = text + text_info_substitute
 
         text_choices = "\n\nVous souhaitez : \nchoix 1 : supprimer cet aliment " \
                        "\nchoix 2 : chercher un autre aliment substitué enregistré" \
@@ -403,7 +405,7 @@ class Controller:
         # call cli method to display the message
         self.new_cli.display_message(message)
 
-        # call Controller method "show_food_and_substitute"
+        # call Controller method "show_favorite_food"
         self.show_favorite_food()
 
 

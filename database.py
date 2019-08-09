@@ -7,8 +7,8 @@
 
 # imports
 import mysql.connector
-import call_api as ca
 
+import call_api as ca
 import orm
 
 
@@ -99,25 +99,28 @@ class Database:
                             continue
 
     def select_categories_database(self):
-        """ use database to selected categories """
+        """ use database to selected the id and name of categories
+        and call orm """
         self.cursor.execute("USE Purbeurre;")
         self.cursor.execute("""SELECT id, categories FROM Category ORDER BY id;""")
-        all_id_name_categories = self.cursor.fetchall()
-        all_id_name_categories = self.new_orm.transform_categories_to_object(all_id_name_categories)
-        return all_id_name_categories
+        id_name_categories = self.cursor.fetchall()
+        id_name_categories = self.new_orm.transform_categories_to_object(id_name_categories)
+        return id_name_categories
 
     def select_foods_database(self, user_answer_id_category):
-        """ use database to selected foods """
+        """ use database to selected the id and name of foods
+        and call orm """
         self.cursor.execute("USE Purbeurre;")
         self.cursor.execute("""SELECT id, name_food
                             FROM Food
                             WHERE category_id = {};""".format(user_answer_id_category))
-        all_id_name_food = self.cursor.fetchall()
-        all_id_name_food = self.new_orm.transform_foods_to_object(all_id_name_food)
-        return all_id_name_food
+        id_name_food = self.cursor.fetchall()
+        id_name_food = self.new_orm.transform_foods_to_object(id_name_food)
+        return id_name_food
 
     def select_substitute(self, user_answer_id_category, user_answer_id_food, read_line_substitute):
-        """ use database to selected food chooses and his substitute """
+        """ use database to selected the name and nutriscore of food chooses,
+        the information of its substitute and call orm"""
         self.cursor.execute("USE Purbeurre;")
         self.cursor.execute("""SELECT (SELECT name_food FROM Food WHERE id = {1}),
                             (SELECT nutriscore FROM Food WHERE id = {1}), 
@@ -128,52 +131,57 @@ class Database:
                             .format(user_answer_id_category,
                                     user_answer_id_food,
                                     read_line_substitute))
-        result_food_chooses_and_substitute = self.cursor.fetchall()
-        result_food_chooses = self.new_orm.transform_substitute_to_object(result_food_chooses_and_substitute)[0]
-        result_substitute = self.new_orm.transform_substitute_to_object(result_food_chooses_and_substitute)[1]
-        return result_substitute, result_food_chooses
+        info_food_chooses_and_substitute = self.cursor.fetchall()
+        info_food_chooses_and_substitute = self.new_orm.transform_substitute_to_object\
+            (info_food_chooses_and_substitute)
+        info_food_chooses = info_food_chooses_and_substitute[0]
+        info_substitute = info_food_chooses_and_substitute[1]
+        return info_substitute, info_food_chooses
 
     def insert_favorite_food(self, user_answer_id_food, name_substitute):
-        """ use database to save substituted food and his substitute """
-        save_favorite_substituted_food = """INSERT INTO Favorite
-                                        (id_food, id_substitute_chooses)
-                                        VALUES({0}, 
-                                        (SELECT id FROM Food WHERE name_food = {1}));""" \
-            .format(int(user_answer_id_food),
-                    "\'" + name_substitute + "\'")
-        self.cursor.execute(save_favorite_substituted_food)
+        """ use database to save favorite food and its substitute """
+        save_favorite_food = """INSERT INTO Favorite
+                                (id_food, id_substitute_chooses)
+                                VALUES({0}, 
+                                (SELECT id FROM Food WHERE name_food = {1}));""" \
+                                .format(int(user_answer_id_food),
+                                        "\'" + name_substitute + "\'")
+        self.cursor.execute(save_favorite_food)
         self.data_base.commit()
 
     def select_favorite_foods(self):
-        """ use database to select the favorite foods and their substitutes """
+        """ use database to select the name of favorite foods,
+        id and name of substitutes and call orm"""
         self.cursor.execute("USE Purbeurre;")
         self.cursor.execute("""SELECT Favorite.id, Food.name_food
                             FROM Food 
                             JOIN Favorite ON Food.id = Favorite.id_substitute_chooses 
                             WHERE Food.id = Favorite.id_substitute_chooses
                             ORDER BY Favorite.id;""")
-        all_id_name_substitute = self.cursor.fetchall()
+        id_name_substitute = self.cursor.fetchall()
         self.cursor.execute("""SELECT Food.name_food
                             FROM Food
                             JOIN Favorite ON Food.id = Favorite.id_food
                             WHERE Food.id = Favorite.id_food
                             ORDER BY Favorite.id;""")
-        all_substituted_food = self.cursor.fetchall()
-        all_id_substitute = self.new_orm.transform_favorite_foods_to_object(all_id_name_substitute, all_substituted_food)[0]
-        all_substituted_food = self.new_orm.transform_favorite_foods_to_object(all_id_name_substitute, all_substituted_food)[2]
-        all_name_substitute = self.new_orm.transform_favorite_foods_to_object(all_id_name_substitute, all_substituted_food)[1]
-        return all_id_substitute, all_substituted_food, all_name_substitute
+        name_substituted_food = self.cursor.fetchall()
+        substituted_food_substitute = self.new_orm.transform_favorite_foods_to_object\
+            (id_name_substitute, name_substituted_food)
+        id_substitute = substituted_food_substitute[0]
+        name_substitute = substituted_food_substitute[1]
+        name_substituted_food = substituted_food_substitute[2]
+        return id_substitute, name_substituted_food, name_substitute
 
     def select_detail_substitute(self, user_answer_choice_id_substitute):
-        """ use database to select the detail of the substitute """
+        """ use database to select the substitute information and call orm """
         self.cursor.execute("""SELECT name_food, nutriscore, description, store, link
                             FROM Food 
                             WHERE id = 
                             (SELECT id_substitute_chooses FROM Favorite WHERE id = {});"""
                             .format(int(user_answer_choice_id_substitute)))
-        show_substitute = self.cursor.fetchall()
-        show_substitute = self.new_orm.transform_detail_substitute_to_object(show_substitute)
-        return show_substitute
+        info_substitute = self.cursor.fetchall()
+        info_substitute = self.new_orm.transform_detail_substitute_to_object(info_substitute)
+        return info_substitute
 
     def delete_favorite_food(self, user_answer_choice_id_substitute):
         """ use database to delete favorite food """

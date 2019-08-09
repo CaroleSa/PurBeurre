@@ -129,8 +129,8 @@ class Database:
                                     user_answer_id_food,
                                     read_line_substitute))
         result_food_chooses_and_substitute = self.cursor.fetchall()
-        result_substitute = self.new_orm.transform_substitute_to_object(result_food_chooses_and_substitute)[0]
-        result_food_chooses = self.new_orm.transform_substitute_to_object(result_food_chooses_and_substitute)[1]
+        result_food_chooses = self.new_orm.transform_substitute_to_object(result_food_chooses_and_substitute)[0]
+        result_substitute = self.new_orm.transform_substitute_to_object(result_food_chooses_and_substitute)[1]
         return result_substitute, result_food_chooses
 
     def insert_favorite_food(self, user_answer_id_food, name_substitute):
@@ -159,9 +159,9 @@ class Database:
                             WHERE Food.id = Favorite.id_food
                             ORDER BY Favorite.id;""")
         all_substituted_food = self.cursor.fetchall()
-        all_id_substitute = self.new_orm.transform_favorite_food_to_object(all_id_name_substitute, all_substituted_food)[0]
-        all_substituted_food = self.new_orm.transform_favorite_food_to_object(all_id_name_substitute, all_substituted_food)[1]
-        all_name_substitute = self.new_orm.transform_favorite_food_to_object(all_id_name_substitute, all_substituted_food)[2]
+        all_id_substitute = self.new_orm.transform_favorite_foods_to_object(all_id_name_substitute, all_substituted_food)[0]
+        all_substituted_food = self.new_orm.transform_favorite_foods_to_object(all_id_name_substitute, all_substituted_food)[2]
+        all_name_substitute = self.new_orm.transform_favorite_foods_to_object(all_id_name_substitute, all_substituted_food)[1]
         return all_id_substitute, all_substituted_food, all_name_substitute
 
     def select_detail_substitute(self, user_answer_choice_id_substitute):

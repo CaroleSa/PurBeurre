@@ -8,9 +8,9 @@
 class Categories:
     """ class Categories """
 
-    def __init__(self, categories_id=None, categories=None):
+    def __init__(self, categories_id=None, name_categories=None):
         self.id = categories_id
-        self.categories = categories
+        self.categories = name_categories
 
 class Foods:
     """ class Foods """

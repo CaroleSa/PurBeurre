@@ -6,15 +6,18 @@
 
 
 class Categories:
+    """ class Categories """
 
-    def __init__(self, id, categories):
-        self.id = id
+    def __init__(self, categories_id=None, categories=None):
+        self.id = categories_id
         self.categories = categories
 
 class Foods:
+    """ class Foods """
 
-    def __init__(self, id, name_food, category_id, nutriscore, description, store, link):
-        self.id = id
+    def __init__(self, foods_id=None, name_food=None, category_id=None,
+                 nutriscore=None, description=None, store=None, link=None):
+        self.id = foods_id
         self.name_food = name_food
         self.category_id = category_id
         self.nutriscore = nutriscore
@@ -23,8 +26,9 @@ class Foods:
         self.link = link
 
 class Favorite:
+    """ class Favorite """
 
-    def __init__(self, id, id_food, id_substitute_chooses):
-        self.id = id
+    def __init__(self, favorite_id=None, id_food=None, id_substitute_chooses=None):
+        self.id = favorite_id
         self.id_food = id_food
         self.id_substitute_chooses = id_substitute_chooses

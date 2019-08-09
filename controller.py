@@ -177,26 +177,22 @@ class Controller:
 
 
     def propose_substitute(self, read_line_substitute):
-        """ detail of the substitute and choice to save it """
+        """ detail of the substitute """
 
         def order_letters(letter):
             """ indicates the location number of letters of the alphabet """
             return int(ord(letter) - ord('a') + 1)
 
-        # call controller method. This list contains :
-        # [1][0] name food chooses     [1][1] nutriscore of the food chooses
-        # [0][0] name substitute       [0][1] nutriscore of the substitute
-        # [0][2] description of the substitute
-        # [0][3] shop or buy it        [0][4] internet link
-        result_substitute = self.get_food_chooses_substitute(read_line_substitute)[0]
-        result_food_chooses = self.get_food_chooses_substitute(read_line_substitute)[1]
+        # call controller method
+        info_substitute = self.get_food_chooses_substitute(read_line_substitute)[0]
+        info_food_chooses = self.get_food_chooses_substitute(read_line_substitute)[1]
 
-        for elt, element in zip(result_substitute, result_food_chooses):
+        for substitute, food_chooses in zip(info_substitute, info_food_chooses):
 
             # if the food chosen does not have a substitute
-            if order_letters(element.nutriscore) \
-                    <= order_letters(elt.nutriscore):
-                self.no_substitute(element.name_food)
+            if order_letters(food_chooses.nutriscore) \
+                    <= order_letters(substitute.nutriscore):
+                self.no_substitute(food_chooses.name_food)
 
             # if the food chosen have a substitute
             else:
@@ -204,10 +200,11 @@ class Controller:
                 message = ""
                 text_list = ["L'aliment", "Nutriscore", "Peut être remplacé par", "Nutriscore",
                             "Description", "Magasin(s) où le trouver", "Lien internet"]
-                list = [element.name_food, element.nutriscore, elt.name_food, elt.nutriscore, elt.description, elt.store, elt.link]
+                info_list = [food_chooses.name_food, food_chooses.nutriscore, substitute.name_food,
+                             substitute.nutriscore, substitute.description, substitute.store, substitute.link]
                 i = 0
-                for elt1, elt2 in zip(text_list, list):
-                    text_substitute = "\n {} : {}".format(elt1, elt2)
+                for text, info in zip(text_list, info_list):
+                    text_substitute = "\n {} : {}".format(text, info)
                     i += 1
                     message = message + text_substitute
 
@@ -215,7 +212,7 @@ class Controller:
                 self.new_cli.display_message(message)
 
                 # call controller method "save_substituted_food"
-                self.save_substituted_food(elt.name_food, read_line_substitute)
+                self.save_substituted_food(substitute.name_food, read_line_substitute)
 
 
     def no_substitute(self, name_food_chooses):
@@ -258,7 +255,7 @@ class Controller:
         try:
             # conditions
             if user_answer == "1":
-                # save substituted food and his substitute
+                # save substituted food and its substitute
                 self.save_favorite_food(name_substitute)
                 message = "\nNous avons bien enregistré l'aliment et son substitut {}."\
                     .format(name_substitute)

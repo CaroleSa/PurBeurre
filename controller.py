@@ -88,7 +88,7 @@ class Controller:
         if user_answer == "1":
             self.propose_categories()
         elif user_answer == "2":
-            self.show_food_and_substitute()
+            self.show_favorite_food()
         elif user_answer == "3":
             message = "\nMerci pour votre visite et à bientôt !"
             self.new_cli.display_message(message)
@@ -287,17 +287,17 @@ class Controller:
         except IntegrityError:
             message = "\nCet aliment et son substitut sont déjà enregistrés."
             self.new_cli.display_message(message)
-            self.show_food_and_substitute()
+            self.show_favorite_food()
 
 
-    def show_food_and_substitute(self):
+    def show_favorite_food(self):
         """ show the favorite foods """
-        # call Controller method : select the favorite foods and their substitutes
-        all_id_substitute = self.get_favorite_foods()[0]
-        all_substituted_food = self.get_favorite_foods()[1]
-        all_name_substitute = self.get_favorite_foods()[2]
+        # call Controller method : get the favorite foods and their substitutes
+        id_favorite = self.get_favorite_foods()[0]
+        name_substituted_food = self.get_favorite_foods()[1]
+        name_substitute = self.get_favorite_foods()[2]
         # if not exist favorite foods
-        if not all_id_substitute:
+        if not id_favorite:
             message = "\nVous n'avez pas d'aliments substitués enregistrés."
             self.new_cli.display_message(message)
             self.menu()
@@ -310,14 +310,14 @@ class Controller:
 
             dict_equivalence_i_id_food_substitute = {}  # creation of a dictionary
             i = 0
-            for food, food1, food2 in zip(all_id_substitute, all_substituted_food, all_name_substitute):
+            for favorite, substituted_food, substitute in zip(id_favorite, name_substituted_food, name_substitute):
                 i += 1
                 text_choices = "\nchoix {} > {} (substitué par {})"\
-                    .format(i, food1.name_food[0], food2.name_food)
+                    .format(i, substituted_food.name_food[0], substitute.name_food)
                 text = text + text_choices
 
                 # addition of elements in the dictionary : choice number and favorite food id
-                dict_equivalence_i_id_food_substitute[i] = food.id
+                dict_equivalence_i_id_food_substitute[i] = favorite.id
 
             # call cli method to display the text and recovery of the user input
             text_input = "Tapez un choix pour avoir plus de détail sur le substitut " \
@@ -330,24 +330,24 @@ class Controller:
 
             try:
                 # conditions
-                if user_answer_choice_i_substitute <= len(all_substituted_food) \
+                if user_answer_choice_i_substitute <= len(name_substituted_food) \
                         and user_answer_choice_i_substitute != 0:
-                    self.detail_substitute(all_substituted_food, user_answer_choice_id_substitute)
+                    self.detail_substitute(name_substituted_food, user_answer_choice_id_substitute)
                 elif user_answer_choice_i_substitute == 0:
                     self.menu()
 
                 # if the answer does not exist
                 else:
                     message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}."\
-                        .format(len(all_substituted_food))
+                        .format(len(name_substituted_food))
                     self.new_cli.display_message(message)
-                    self.show_food_and_substitute()
+                    self.show_favorite_food()
 
             except ValueError:
                 message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper un chiffre entre 0 et {}."\
-                    .format(len(all_substituted_food))
+                    .format(len(name_substituted_food))
                 self.new_cli.display_message(message)
-                self.show_food_and_substitute()
+                self.show_favorite_food()
 
 
     def detail_substitute(self, all_substituted_food, user_answer_choice_id_substitute):
@@ -381,7 +381,7 @@ class Controller:
         if int(user_answer) == 1:
             self.delete_food_substitute(user_answer_choice_id_substitute)
         elif int(user_answer) == 2:
-            self.show_food_and_substitute()
+            self.show_favorite_food()
         elif int(user_answer) == 3:
             self.menu()
 
@@ -404,7 +404,7 @@ class Controller:
         self.new_cli.display_message(message)
 
         # call Controller method "show_food_and_substitute"
-        self.show_food_and_substitute()
+        self.show_favorite_food()
 
 
 

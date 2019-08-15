@@ -48,14 +48,14 @@ class Database:
         self.cursor = self.data_base.cursor()
 
         # executed "use Purbeurre" request
-        self.cursor.execute("USE Purbeurre;")
+        self.cursor.execute("USE Purbeurre")
 
     def insert_data(self):
         """ Inserting data into the database """
         self.connection_database()
 
         # no insertion if the table Food already contains any data
-        self.cursor.execute("SELECT * FROM Food;")
+        self.cursor.execute("SELECT * FROM Food")
         data_table_food = self.cursor.fetchall()
         if not data_table_food:
 
@@ -69,7 +69,7 @@ class Database:
 
                 # inserting data into Category table
                 insert_data_categories = ("""INSERT IGNORE INTO Category (categories)
-                                          VALUES({0});"""
+                                          VALUES({0})"""
                                           .format("\'"+elt+"\'"))
                 self.cursor.execute(insert_data_categories)
                 self.data_base.commit()
@@ -88,7 +88,7 @@ class Database:
                                                 nutriscore, description, store, link) 
                                                 VALUES({0}, 
                                                 (SELECT id FROM Category WHERE categories = {1}),
-                                                {2}, {3}, {4}, {5});"""
+                                                {2}, {3}, {4}, {5})"""
                                                 .format(product_name, "\'"+elt+"\'",
                                                         nutrition_grade, ingredients,
                                                         store_tags, url))
@@ -104,7 +104,7 @@ class Database:
         and call orm """
         # connection to the database
         self.cursor = self.data_base.cursor(MySQLCursorPrepared)
-        self.cursor.execute("USE Purbeurre;")
+        self.cursor.execute("USE Purbeurre")
         self.cursor.execute("SELECT id, categories FROM Category ORDER BY id")
         id_name_categories = self.cursor.fetchall()
         id_name_categories = self.new_orm.transform_categories_to_object(id_name_categories)
@@ -130,7 +130,7 @@ class Database:
                             name_food, nutriscore, description, store, link
                             FROM Food
                             WHERE category_id = {0}
-                            ORDER BY nutriscore LIMIT {2},1;""" \
+                            ORDER BY nutriscore LIMIT {2},1""" \
                             .format(user_answer_id_category,
                                     user_answer_id_food,
                                     read_line_substitute))
@@ -147,7 +147,7 @@ class Database:
         save_favorite_food = """INSERT INTO Favorite
                                 (id_food, id_substitute_chooses)
                                 VALUES({0}, 
-                                (SELECT id FROM Food WHERE name_food = {1}));""" \
+                                (SELECT id FROM Food WHERE name_food = {1}))""" \
                                 .format(int(user_answer_id_food),
                                         "\'" + name_substitute + "\'")
         self.cursor.execute(save_favorite_food)
@@ -161,13 +161,13 @@ class Database:
                             FROM Food 
                             JOIN Favorite ON Food.id = Favorite.id_substitute_chooses 
                             WHERE Food.id = Favorite.id_substitute_chooses
-                            ORDER BY Favorite.id;""")
+                            ORDER BY Favorite.id""")
         id_name_substitute = self.cursor.fetchall()
         self.cursor.execute("""SELECT Food.name_food
                             FROM Food
                             JOIN Favorite ON Food.id = Favorite.id_food
                             WHERE Food.id = Favorite.id_food
-                            ORDER BY Favorite.id;""")
+                            ORDER BY Favorite.id""")
         name_substituted_food = self.cursor.fetchall()
         substituted_food_substitute = self.new_orm.transform_favorite_foods_to_object\
             (id_name_substitute, name_substituted_food)
@@ -182,7 +182,7 @@ class Database:
         self.cursor.execute("""SELECT name_food, nutriscore, description, store, link
                             FROM Food 
                             WHERE id = 
-                            (SELECT id_substitute_chooses FROM Favorite WHERE id = {});"""
+                            (SELECT id_substitute_chooses FROM Favorite WHERE id = {})"""
                             .format(int(user_answer_choice_id_substitute)))
         info_substitute = self.cursor.fetchall()
         info_substitute = self.new_orm.transform_detail_substitute_to_object(info_substitute)
@@ -191,7 +191,7 @@ class Database:
     def delete_favorite_food(self, user_answer_choice_id_substitute):
         """ use database to delete favorite food """
         self.cursor = self.data_base.cursor(MySQLCursorPrepared)
-        self.cursor.execute("""DELETE FROM Favorite where id = {};"""
+        self.cursor.execute("""DELETE FROM Favorite where id = {}"""
                             .format(int(user_answer_choice_id_substitute)))
         self.data_base.commit()
 

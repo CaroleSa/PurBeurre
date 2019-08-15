@@ -110,14 +110,14 @@ class Controller:
             text = text + text_choices
 
         # call cli method to display the text and recovery of the user input
-        self.user_answer_id_category = int(self.new_cli.question_answer(text))
+        self.user_answer_id_category = self.new_cli.question_answer(text)
 
         try:
             # conditions
-            if self.user_answer_id_category <= len(self.get_id_name_categories()) \
-                    and self.user_answer_id_category != 0:
+            if int(self.user_answer_id_category) <= len(self.get_id_name_categories()) \
+                    and int(self.user_answer_id_category) != 0:
                 self.propose_foods()
-            elif self.user_answer_id_category == 0:
+            elif int(self.user_answer_id_category) == 0:
                 self.menu()
 
             # if the answer does not exist

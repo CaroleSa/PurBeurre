@@ -7,6 +7,7 @@
 
 # imports
 import mysql.connector
+from mysql.connector.cursor import MySQLCursorPrepared
 
 import call_api as ca
 import orm
@@ -101,8 +102,10 @@ class Database:
     def select_categories_database(self):
         """ use database to selected the id and name of categories
         and call orm """
+        # connection to the database
+        self.cursor = self.data_base.cursor(MySQLCursorPrepared)
         self.cursor.execute("USE Purbeurre;")
-        self.cursor.execute("""SELECT id, categories FROM Category ORDER BY id;""")
+        self.cursor.execute("SELECT id, categories FROM Category ORDER BY id")
         id_name_categories = self.cursor.fetchall()
         id_name_categories = self.new_orm.transform_categories_to_object(id_name_categories)
         return id_name_categories
@@ -110,10 +113,10 @@ class Database:
     def select_foods_database(self, user_answer_id_category):
         """ use database to selected the id and name of foods
         and call orm """
-        self.cursor.execute("USE Purbeurre;")
+        self.cursor = self.data_base.cursor(MySQLCursorPrepared)
         self.cursor.execute("""SELECT id, name_food
                             FROM Food
-                            WHERE category_id = {};""".format(user_answer_id_category))
+                            WHERE category_id = {}""".format(user_answer_id_category))
         id_name_food = self.cursor.fetchall()
         id_name_food = self.new_orm.transform_foods_to_object(id_name_food)
         return id_name_food
@@ -121,7 +124,7 @@ class Database:
     def select_substitute(self, user_answer_id_category, user_answer_id_food, read_line_substitute):
         """ use database to selected the name and nutriscore of food chooses,
         the information of its substitute and call orm"""
-        self.cursor.execute("USE Purbeurre;")
+        self.cursor = self.data_base.cursor(MySQLCursorPrepared)
         self.cursor.execute("""SELECT (SELECT name_food FROM Food WHERE id = {1}),
                             (SELECT nutriscore FROM Food WHERE id = {1}), 
                             name_food, nutriscore, description, store, link
@@ -140,6 +143,7 @@ class Database:
 
     def insert_favorite_food(self, user_answer_id_food, name_substitute):
         """ use database to save favorite food and its substitute """
+        self.cursor = self.data_base.cursor(MySQLCursorPrepared)
         save_favorite_food = """INSERT INTO Favorite
                                 (id_food, id_substitute_chooses)
                                 VALUES({0}, 
@@ -152,7 +156,7 @@ class Database:
     def select_favorite_foods(self):
         """ use database to select the name of favorite foods,
         id and name of substitutes and call orm"""
-        self.cursor.execute("USE Purbeurre;")
+        self.cursor = self.data_base.cursor(MySQLCursorPrepared)
         self.cursor.execute("""SELECT Favorite.id, Food.name_food
                             FROM Food 
                             JOIN Favorite ON Food.id = Favorite.id_substitute_chooses 
@@ -174,6 +178,7 @@ class Database:
 
     def select_detail_substitute(self, user_answer_choice_id_substitute):
         """ use database to select the substitute information and call orm """
+        self.cursor = self.data_base.cursor(MySQLCursorPrepared)
         self.cursor.execute("""SELECT name_food, nutriscore, description, store, link
                             FROM Food 
                             WHERE id = 
@@ -185,7 +190,7 @@ class Database:
 
     def delete_favorite_food(self, user_answer_choice_id_substitute):
         """ use database to delete favorite food """
-        self.cursor.execute("USE Purbeurre;")
+        self.cursor = self.data_base.cursor(MySQLCursorPrepared)
         self.cursor.execute("""DELETE FROM Favorite where id = {};"""
                             .format(int(user_answer_choice_id_substitute)))
         self.data_base.commit()

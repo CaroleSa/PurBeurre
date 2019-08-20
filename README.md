@@ -24,7 +24,7 @@ Le programme fonctionne à partir d'une base MySql :
 
 Catégories d'aliments proposées par le programme (fichier call_api.py ligne 18 : dans l'attribut "categories")
 
-Nombre d'aliments proposés dans chaque catégorie (fichier database.py ligne 78 : 100 par défaut)
+Nombre d'aliments proposés dans chaque catégorie (fichier database.py ligne 79 : 100 par défaut)
 
 
 

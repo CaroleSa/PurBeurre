@@ -22,7 +22,7 @@ class CallApi:
 
     def load_data(self):
         """ Loading data of the A.P.I. Open Food Facts and convert to json """
-        # creating the list that contains food data of categories chooses
+        # creating the list that contains foods data of categories chooses
         for elt in self.categories:
             payload = {'action': 'process', 'tagtype_0': 'categories', 'tag_contains_0': 'contains',
                        'tag_0': "\'" + elt + "\'", 'sort_by': 'unique_scans_n', 'page_size': '1000',

@@ -157,6 +157,7 @@ class Database:
         """ use database to select the name of favorite foods,
         id and name of substitutes and call orm"""
         self.cursor = self.data_base.cursor(MySQLCursorPrepared)
+        self.cursor.execute("USE Purbeurre")
         self.cursor.execute("""SELECT Favorite.id, Food.name_food
                             FROM Food 
                             JOIN Favorite ON Food.id = Favorite.id_substitute_chooses 

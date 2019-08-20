@@ -366,9 +366,8 @@ class Controller:
 
         for food in info_substitute:
             info_list = [food.name_food, food.nutriscore, food.description, food.store, food.link]
-
-            for text, info in zip(text_list, info_list):
-                text_info_substitute = "\n{} : {}".format(text, info)
+            for elt_text, elt_info in zip(text_list, info_list):
+                text_info_substitute = "\n{} : {}".format(elt_text, elt_info)
                 text = text + text_info_substitute
 
         text_choices = "\n\nVous souhaitez : \nchoix 1 : supprimer cet aliment " \
@@ -379,17 +378,23 @@ class Controller:
         # call cli method to display the text and recovery of the user input
         user_answer = self.new_cli.question_answer(text)
 
-        # conditions
-        if int(user_answer) == 1:
-            self.delete_food_substitute(user_answer_choice_id_substitute)
-        elif int(user_answer) == 2:
-            self.show_favorite_food()
-        elif int(user_answer) == 3:
-            self.menu()
+        try:
+            # conditions
+            if int(user_answer) == 1:
+                self.delete_food_substitute(user_answer_choice_id_substitute)
+            elif int(user_answer) == 2:
+                self.show_favorite_food()
+            elif int(user_answer) == 3:
+                self.menu()
 
-        # if the answer does not exist
-        else:
-            message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1 ou 2"
+            # if the answer does not exist
+            else:
+                message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3"
+                self.new_cli.display_message(message)
+                self.detail_substitute(all_substituted_food, user_answer_choice_id_substitute)
+
+        except ValueError:
+            message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3"
             self.new_cli.display_message(message)
             self.detail_substitute(all_substituted_food, user_answer_choice_id_substitute)
 

@@ -404,7 +404,6 @@ class Controller:
         self.show_favorite_food()
 
 
-
 # instantiate the class Controller and call "menu" method
 NEW_CONTROLLER = Controller()
 NEW_CONTROLLER.menu()

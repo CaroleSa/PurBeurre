@@ -2,18 +2,18 @@
 # coding: UTF-8
 
 
-""" Class Categories, Foods and Favorite """
+""" Class Category, Food and Favorite """
 
 
-class Categories:
-    """ class Categories """
+class Category:
+    """ class Category """
 
     def __init__(self, categories_id=None, name_categories=None):
         self.id = categories_id
         self.categories = name_categories
 
-class Foods:
-    """ class Foods """
+class Food:
+    """ class Food """
 
     def __init__(self, foods_id=None, name_food=None, category_id=None,
                  nutriscore=None, description=None, store=None, link=None):

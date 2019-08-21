@@ -19,7 +19,7 @@ class Database:
 
     def __init__(self):
         """ Connection at MySQL and creation of cursor """
-
+        # instantiate the class Orm
         self.new_orm = orm.Orm()
 
         # read the file connection.yml

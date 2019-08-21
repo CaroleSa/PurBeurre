@@ -7,6 +7,7 @@
 
 # imports
 from mysql.connector.errors import IntegrityError
+
 import database
 import view
 
@@ -281,11 +282,6 @@ class Controller:
                 self.new_cli.display_message(message)
                 self.save_substituted_food(name_substitute, read_line_substitute)
 
-        except ValueError:
-            message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3."
-            self.new_cli.display_message(message)
-            self.save_substituted_food(name_substitute, read_line_substitute)
-
         except IntegrityError:
             message = "\nCet aliment et son substitut sont déjà enregistrés."
             self.new_cli.display_message(message)
@@ -378,22 +374,16 @@ class Controller:
         # call cli method to display the text and recovery of the user input
         user_answer = self.new_cli.question_answer(text)
 
-        try:
-            # conditions
-            if int(user_answer) == 1:
-                self.delete_food_substitute(user_answer_choice_id_substitute)
-            elif int(user_answer) == 2:
-                self.show_favorite_food()
-            elif int(user_answer) == 3:
-                self.menu()
+        # conditions
+        if user_answer == "1":
+            self.delete_food_substitute(user_answer_choice_id_substitute)
+        elif user_answer == "2":
+            self.show_favorite_food()
+        elif user_answer == "3":
+            self.menu()
 
-            # if the answer does not exist
-            else:
-                message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3"
-                self.new_cli.display_message(message)
-                self.detail_substitute(all_substituted_food, user_answer_choice_id_substitute)
-
-        except ValueError:
+        # if the answer does not exist
+        else:
             message = "\nCE CHOIX N'EXISTE PAS. \nVeuillez taper 1, 2 ou 3"
             self.new_cli.display_message(message)
             self.detail_substitute(all_substituted_food, user_answer_choice_id_substitute)

@@ -6,7 +6,6 @@
 
 # import
 import controller as ct
-# pylint: disable=too-many-function-args
 
 
 
@@ -27,7 +26,7 @@ class CommandLineInterface:
 
 
 def main():
-    """ use of class Controller """
+    """ call class Controller """
     ct.Controller()
 
 if __name__ == "main":

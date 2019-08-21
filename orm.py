@@ -11,7 +11,7 @@ import model
 
 
 class Orm:
-    """ Transforming data into a python object """
+    """ Transforming data to python object """
 
 
     @classmethod

@@ -18,7 +18,7 @@ class Database:
     """ Creation database and insert data """
 
     def __init__(self):
-        """ Connection at MySQL, creation cursor and list of categories """
+        """ Connection at MySQL and creation of cursor """
 
         self.new_orm = orm.Orm()
 
@@ -155,7 +155,7 @@ class Database:
 
     def select_favorite_foods(self):
         """ use database to select the name of favorite foods,
-        id and name of substitutes and call orm"""
+        the id and the name of substitutes and call orm"""
         self.cursor = self.data_base.cursor(MySQLCursorPrepared)
         self.cursor.execute("USE Purbeurre")
         self.cursor.execute("""SELECT Favorite.id, Food.name_food

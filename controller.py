@@ -1,4 +1,4 @@
-#! /usr/bin/env python3    BONNE VERSION
+#! /usr/bin/env python3
 # coding: UTF-8
 
 """ Class Controller """

@@ -22,11 +22,6 @@ Données configurables :
 Le programme fonctionne à partir d'une base MySql :
 Éléments de connexion à MySql (fichier connection.yml)
 
-Catégories d'aliments proposées par le programme (fichier call_api.py ligne 18 : dans l'attribut "categories")
-
-Nombre d'aliments proposés dans chaque catégorie (fichier database.py ligne 79 : 100 par défaut)
-
-
 
 Fonctionnement du programme :
 Sur le terminal, lors du lancement du programme, 
